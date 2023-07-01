@@ -1,9 +1,9 @@
 - name: Read messages from a kafka topic and act on them
-  hosts: localhost
+  hosts: all
   ## Define our source for events
   sources:   
     - ansible.eda.kafka:
-        host: kafka.example.com
+        host: 192.168.122.33
         port: 9092
         topic: quickstart-events
         group_id:
