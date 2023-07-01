@@ -1,0 +1,9 @@
+
+ansible-rulebook --rulebook troubleshoot-rule-eda.yaml -i inventory.yml --verbose
+
+$ echo '{"implement": "Rule-Base", "init": "True"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
+
+$ echo '{"implement": "Rule-Base", "init": "False"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
+
+# echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
+

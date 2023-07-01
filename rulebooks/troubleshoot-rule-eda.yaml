@@ -1,0 +1,29 @@
+- name: Read messages from a kafka topic and act on them
+  hosts: localhost
+  ## Define our source for events
+  sources:   
+    - ansible.eda.kafka:
+        host: kafka.example.com
+        port: 9092
+        topic: quickstart-events
+        group_id:
+
+  rules:
+    - name: receive event for network update
+      condition: event.implement == 'Rule-Base'
+      action:
+        run_playbook:
+          name: troubleshooting.yaml
+      delegate_to: localhost
+        
+    - name: receive event for new routing
+      condition: event.implement == 'Execute TroubleShoot'
+      action:
+        run_playbook:
+          name: execute-task.yaml
+      delegate_to: localhost
+
+
+
+
+

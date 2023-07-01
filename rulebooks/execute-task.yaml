@@ -1,0 +1,92 @@
+---
+- name: Configure New Routing
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    tasks_results:
+      'A': 0
+      'B': 0
+      'C': 0
+      'D': 0
+      'E': 0
+      'F': 0
+      'G': 0
+
+      'Antivirus_Scan_Issue': 1
+      'SQL_Memory_Issue': 1
+      'OS_Memory_Issue': 1
+      'Network_GateWay_Issue': 1
+      'Web_Pool_Issue': 0
+      'Log_Ticket': 0
+      'Stop_Delay_Scan': 0
+      'Clean_DB_Memory_Heap': 0
+      'Flush_OS_Cache_Memory': 0
+      'Fix_Default_Gateway': 0
+      'Fix_WebApp_connection_Pools': 0
+
+    home_dir: '/home/jinzha/troubleshoot-01'
+
+    excuted_tasks: []
+
+  tasks:
+  #- name: info about new routing
+  #  debug:
+  #    msg: "{{ event }}"
+
+
+  - name: Cannot find solution based on existing knowledge map
+    block:
+    - name: Need human investigation
+      debug:
+        msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+
+    - meta: end_play
+
+    when: "'999' in  event['record']"
+
+  - name: create readablbe solution
+    command: /usr/bin/python3
+    args:
+      stdin: |
+        import re
+        total_succ = 0
+        print("Recommended TroubleShooting Path:")
+        for t in {{ event['record'].split('==>') }}:
+            task_name = t.split('-')[0]
+            if task_name == 'start':
+              continue
+            rc = t.split('-')[1]
+            next_t = t.split('-')[2].split(':')[0]
+            weight = t.split('-')[2].split(':')[1].strip()
+            succ = int(weight)
+            total_succ += succ
+            if next_t == 'end':
+              print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
+            else:
+              print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
+        print("The recommendation path current weight is " + str(total_succ))
+        print("---------------------------------")
+        print("Actual Execution TroubleShooting Path:")
+    register: recommended_solution
+
+  - name: TroubleShoot Path
+    set_fact:
+      excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
+
+        #  debug: var=recommended_solution['stdout_lines']
+
+ 
+  - name: execute Single Tasks
+    include_tasks: "{{ home_dir }}/task.yaml"
+    loop: "{{ event['record'].split('==>')[1:] }}"
+    loop_control:
+      loop_var: task
+
+  - name: Successful TroubleShoot Path
+    debug: var=excuted_tasks
+
+#    debug:
+#      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
+#    loop: "{{ event['record'].split('==>') }}"
+ 

@@ -1,0 +1,33 @@
+---
+
+ 
+#- name: Retrieve data from csv file
+#  set_fact:
+#    raw_path_data: "{{ lookup('file', 'link_data_file').split('\n') }}"
+#    path_data: []
+#
+#- debug: var=raw_path_data
+#
+#- name: Convert raw data to j2 input data - list of list
+#  set_fact:
+#    path_data: "{{ path_data + [ line.split(',') ] }}"
+#  loop: "{{ raw_path_data }}"
+#  loop_control:
+#    loop_var: line
+#
+#- debug: var=path_data
+#
+#- name: Generate body data for KIE call
+#  ansible.builtin.template:
+#    src: input.j2
+#    dest: roles/troubleshoot/files/input.json
+#    #dest: input.json
+
+- name: Call KIE
+  include_tasks: sub_tasks/call_rule_engine.yaml
+
+
+- debug: 
+    msg: "{{ result['json'] }}"
+
+

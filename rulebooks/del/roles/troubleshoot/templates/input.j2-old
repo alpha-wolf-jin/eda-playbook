@@ -1,0 +1,16 @@
+{
+    "path":[
+       {% for data in path_data %}
+        {
+               {{ data }},
+        },
+       {% endfor %}
+    ],
+    "task": [
+        {
+              "task_result":"2",
+              "task":"{{ start|lower }}"
+        }
+    ]
+}
+
