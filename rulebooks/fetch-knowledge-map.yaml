@@ -1,8 +1,9 @@
 ---
 - name: Store file into /tmp/192.168.122.51/{{ home_dir }}
   ansible.builtin.fetch:
-    src: "{{ home_dir }}"
+    src: "{{ item }}"
     dest: /tmp
+  loop: "{{ source_files }}"
   when: "inventory_hostname == '192.168.122.51'"
   register: result
 
