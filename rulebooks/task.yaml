@@ -71,12 +71,26 @@
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
+        when: "inventory_hostname == '192.168.122.51'"
     
       - name: Send event to find current best solution
         ansible.builtin.shell: |
           set timeout 300
           echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
-    
+ 
+      - set_fact:
+          ansible_connection: ssh
+
+      - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+        ansible.builtin.copy:
+          src: "{{ source_files[1] }}"
+          dest: "{{ init_knowledge_map_dir}}/link_data_file"
+          mode: '0644'
+        when: "inventory_hostname == '192.168.122.51'"
+
+      - set_fact:
+          ansible_connection: local
+
       - meta: end_play
     
       when: task.strip().split('-')[1] != task_result

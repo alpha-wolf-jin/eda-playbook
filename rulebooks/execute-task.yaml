@@ -34,6 +34,9 @@
   - name: Prepare the knowledge map on localhost
     include_tasks: fetch-knowledge-map.yaml
 
+  - set_fact:
+      ansible_connection: local
+
   - name: tasks on localhost
     block:
        - name: Cannot find solution based on existing knowledge map
@@ -77,7 +80,9 @@
 
              #  debug: var=recommended_solution['stdout_lines']
 
- 
+      # - set_fact:
+      #     ansible_connection: ssh
+
        - name: execute Single Tasks
          include_tasks: "task.yaml"
          loop: "{{ event['record'].split('==>')[1:] }}"
@@ -87,14 +92,18 @@
        - name: Successful TroubleShoot Path
          debug: var=excuted_tasks
 
-    when: "inventory_hostname == 'localhost'"
+#    when: "inventory_hostname == 'localhost'"
 
 #    debug:
 #      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
 #    loop: "{{ event['record'].split('==>') }}"
  
+  - set_fact:
+      ansible_connection: ssh
+
   - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
     ansible.builtin.copy:
       src: "{{ source_files[1] }}"
       dest: "{{ init_knowledge_map_dir}}/link_data_file"
       mode: '0644'
+    when: "inventory_hostname == '192.168.122.51'"
