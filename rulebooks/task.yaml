@@ -3,9 +3,14 @@
 #  debug: 
 #    msg: "Execute task: {{  task.strip().split('-')[0] }} ; Expected: {{ task.strip().split('-')[1] }} ; unlikly: {{ task.strip().split('-')[2].split(':')[1] }}"
 
+- debug: var=task
+
 - name: update execution history
   set_fact:
     excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
+  when: task.strip().split('-')[2].split(':')[1] == '0'
+
+- debug: var=excuted_tasks
   when: task.strip().split('-')[2].split(':')[1] == '0'
 
 - name: skip this task if it was executed before
@@ -19,9 +24,13 @@
     - set_fact:
         task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
 
+    - debug: var=task_status
+
     - name: update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+
+    - debug: var=task_status
 
     - name: when task result is expected
       block:
