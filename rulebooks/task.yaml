@@ -42,6 +42,8 @@
           replace: '\1,\2,0'
         register: result
     
+      - debug: var=result
+
       when: task.strip().split('-')[1] == task_result
  
     - name: when task result is not expected
@@ -61,6 +63,8 @@
           replace: '\1,\2,999'
         register: result
     
+      - debug: var=result
+
       - name: Update the network map file when result is expected
         ansible.builtin.replace:
           path: "{{ init_knowledge_map_dir }}/link_data_file"
