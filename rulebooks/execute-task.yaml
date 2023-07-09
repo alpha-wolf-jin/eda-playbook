@@ -78,7 +78,7 @@
 
  
   - name: execute Single Tasks
-    include_tasks: "{{ home_dir }}/task.yaml"
+    include_tasks: "task.yaml"
     loop: "{{ event['record'].split('==>')[1:] }}"
     loop_control:
       loop_var: task
