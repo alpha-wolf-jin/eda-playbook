@@ -1,6 +1,5 @@
 - name: troubleshoot
-  hosts: localhost
-  connection: local
+  hosts: eda-troubleshooting
   gather_facts: false
 
 
