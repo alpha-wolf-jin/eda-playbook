@@ -28,7 +28,7 @@
     
       - name: Update the network map file when result is expected
         ansible.builtin.replace:
-          path: "{{ home_dir }}/files/link_data_file"
+          path: "{{ home_dir }}/link_data_file"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
@@ -47,14 +47,14 @@
     
       - name: Update the network map file - when result is not expected
         ansible.builtin.replace:
-          path: "{{ home_dir }}/files/link_data_file"
+          path: "{{ home_dir }}/link_data_file"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
           replace: '\1,\2,999'
         register: result
     
       - name: Update the network map file when result is expected
         ansible.builtin.replace:
-          path: "{{ home_dir }}/files/link_data_file"
+          path: "{{ home_dir }}/link_data_file"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
@@ -62,9 +62,7 @@
       - name: Send event to find current best solution
         ansible.builtin.shell: |
           set timeout 300
-          echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
-        args:
-          chdir: /home/jinzha/kafka_2.13-3.3.1
+          echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
     
       - meta: end_play
     
