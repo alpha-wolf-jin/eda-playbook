@@ -14,34 +14,37 @@
     init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/eda-playbook/rulebooks/files'
   tasks:
 
-  - name: Retrieve Knowledge map file to local
-    block:
-      - name: Store file into /tmp/fetched/host.example.com/tmp/somefile
-        ansible.builtin.fetch:
-          src: "{{ home_dir }}"
-          dest: /tmp
-        when: "inventory_hostname == '192.168.122.51'"
-        register: result
+  - name: Prepare the knowledge map on localhost
+    include_tasks: fetch-knowledge-map.yaml
+          
+  #- name: Retrieve Knowledge map file to local
+  #  block:
+  #    - name: Store file into /tmp/fetched/host.example.com/tmp/somefile
+  #      ansible.builtin.fetch:
+  #        src: "{{ home_dir }}"
+  #        dest: /tmp
+  #      when: "inventory_hostname == '192.168.122.51'"
+  #      register: result
 
-      - debug: var=result
+  #    - debug: var=result
 
-      - name: use the initial knowledge map
-        shell: |
-          cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/link_data_file
-        when:  
-          - event.init is defined
-          - event.init | bool
-          - "inventory_hostname == 'localhost'"
-        register: result
+  #    - name: use the initial knowledge map
+  #      shell: |
+  #        cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/link_data_file
+  #      when:  
+  #        - event.init is defined
+  #        - event.init | bool
+  #        - "inventory_hostname == 'localhost'"
+  #      register: result
 
-      - debug: var=result
+  #    - debug: var=result
 
-  - debug:
-      msg: "{{ event }}"
+  #- debug:
+  #    msg: "{{ event }}"
 
   - name: Delegate to localhost
     block:
-      - name: Init Knowlesge Map
+      - name: Init used Knowlesge Map
         block:
         - name: replace weight 10
           ansible.builtin.replace:
