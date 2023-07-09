@@ -83,8 +83,8 @@
 
       - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
         ansible.builtin.copy:
-          src: "{{ source_files[1] }}"
-          dest: "{{ init_knowledge_map_dir}}/link_data_file"
+          src: "{{ init_knowledge_map_dir}}/link_data_file"
+          dest: "{{ source_files[1] }}"
           mode: '0644'
         when: "inventory_hostname == '192.168.122.51'"
 
