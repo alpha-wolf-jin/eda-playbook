@@ -1,8 +1,0 @@
-start,0,order_has_dependency_data,0
-order_has_dependency_data,0,data_in_order_complete,1
-data_in_order_complete,0,update_database,1
-update_database,0,set_var_proceed_to_next,1
-data_in_order_complete,1,send_email_about_missing_data,1
-order_has_dependency_data,1,send_email_about_missing_data,1
-set_var_proceed_to_next,0,Prepare_the_script_from_the_data_in_the_database,1
-Prepare_the_script_from_the_data_in_the_database,0,end,1
