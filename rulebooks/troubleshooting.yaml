@@ -43,12 +43,12 @@
     block:
     - name: replace weight 10
       ansible.builtin.replace:
-        path: {{ init_knowledge_map_dir }}/link_data_file
+        path: "{{ init_knowledge_map_dir }}/link_data_file"
         regexp: '0$'
         replace: '1'
     - name: replace weight 999
       ansible.builtin.replace:
-        path: {{ init_knowledge_map_dir }}/link_data_file
+        path: "{{ init_knowledge_map_dir }}/link_data_file"
         regexp: '999$'
         replace: '9'
     when:  
