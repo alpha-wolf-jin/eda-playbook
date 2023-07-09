@@ -27,7 +27,7 @@
 
       - name: use the initial knowledge map
         shell: |
-          cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/files/link_data_file
+          cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/link_data_file
         when:  
           - event.init is defined
           - event.init | bool
