@@ -41,6 +41,7 @@
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
+        when: "inventory_hostname == 'localhost'"
     
       - debug: var=result
 
@@ -62,6 +63,7 @@
           regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
           replace: '\1,\2,999'
         register: result
+        when: "inventory_hostname == 'localhost'"
     
       - debug: var=result
 
@@ -71,13 +73,14 @@
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
-        when: "inventory_hostname == '192.168.122.51'"
+        when: "inventory_hostname == 'localhost'"
     
       - name: Send event to find current best solution
         ansible.builtin.shell: |
           set timeout 300
           echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
- 
+        when: "inventory_hostname == 'localhost'"
+
       - set_fact:
           ansible_connection: ssh
 
