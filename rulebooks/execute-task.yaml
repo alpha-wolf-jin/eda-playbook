@@ -15,7 +15,7 @@
       'Antivirus_Scan_Issue': 1
       'SQL_Memory_Issue': 1
       'OS_Memory_Issue': 1
-      'Network_GateWay_Issue': 1
+      'Network_GateWay_Issue': 0
       'Web_Pool_Issue': 0
       'Log_Ticket': 0
       'Stop_Delay_Scan': 0
