@@ -265,7 +265,7 @@ fi
 
 # Which java to use
 if [ -z "$JAVA_HOME" ]; then
-  JAVA="java"
+  JAVA="/usr/bin/java"
 else
   JAVA="$JAVA_HOME/bin/java"
 fi
