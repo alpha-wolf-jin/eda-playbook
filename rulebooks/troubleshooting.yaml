@@ -17,30 +17,6 @@
   - name: Prepare the knowledge map on localhost
     include_tasks: fetch-knowledge-map.yaml
           
-  #- name: Retrieve Knowledge map file to local
-  #  block:
-  #    - name: Store file into /tmp/fetched/host.example.com/tmp/somefile
-  #      ansible.builtin.fetch:
-  #        src: "{{ home_dir }}"
-  #        dest: /tmp
-  #      when: "inventory_hostname == '192.168.122.51'"
-  #      register: result
-
-  #    - debug: var=result
-
-  #    - name: use the initial knowledge map
-  #      shell: |
-  #        cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/link_data_file
-  #      when:  
-  #        - event.init is defined
-  #        - event.init | bool
-  #        - "inventory_hostname == 'localhost'"
-  #      register: result
-
-  #    - debug: var=result
-
-  #- debug:
-  #    msg: "{{ event }}"
 
   - name: Delegate to localhost
     block:
@@ -61,7 +37,7 @@
           - not (event.init | bool)
 
           
-      - name: Retrieve data from csv file
+      - name: Retrieve data from knowledge map file
         set_fact:
           raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/link_data_file').split('\n') }}"
           path_data: []
@@ -79,7 +55,7 @@
           src: templates/input.j2
           dest: "{{ init_knowledge_map_dir }}/input.json"
       
-      - name: Call KIE
+      - name: Call KIE for rcommended solution
         ansible.builtin.uri:
           url: "{{ rule_base_url }}"
           method: POST
@@ -95,7 +71,7 @@
       
       
           
-      - name: Facts in working memory
+      - name: Recommended Solutions
         set_fact:
           kie_facts: "{{ result['json'] }}"
 
