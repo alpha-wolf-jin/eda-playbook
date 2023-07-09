@@ -6,7 +6,6 @@
         host: 192.168.122.33
         port: 9092
         topic: quickstart-events
-        group_id:
 
   rules:
     - name: receive event for network update
@@ -22,8 +21,3 @@
         run_job_template:
           name: execute-task
           organization: Default
-
-
-
-
-
