@@ -9,12 +9,12 @@
 
   rules:
     - name: receive event for network update
-      condition: event is defined
+      condition: event.implement == 'Rule-Base'
       action:
-        print_event:
-          pretty: true
-          var_root: i
-
+        run_job_template:
+          name: recommendation
+          organization: Default
+        
     - name: receive event for new routing
       condition: event.implement == 'Execute TroubleShoot'
       action:
