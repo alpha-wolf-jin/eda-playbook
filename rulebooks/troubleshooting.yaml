@@ -136,4 +136,4 @@
             chdir: /home/jinzha/kafka_2.13-3.3.1
         when:  results.stdout_lines[-1] | bool
 
-    delegate_to: localhost
+    when: "inventory_hostname == 'localhost'"
