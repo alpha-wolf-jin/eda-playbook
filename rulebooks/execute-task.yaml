@@ -1,7 +1,6 @@
 ---
 - name: Configure New Routing
-  hosts: localhost
-  connection: local
+  hosts: all
   gather_facts: false
   vars:
     tasks_results:
@@ -39,57 +38,60 @@
   - name: Prepare the knowledge map on localhost
     include_tasks: fetch-knowledge-map.yaml
 
-
-  - name: Cannot find solution based on existing knowledge map
+  - name: tasks on localhost
     block:
-    - name: Need human investigation
-      debug:
-        msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+       - name: Cannot find solution based on existing knowledge map
+         block:
+         - name: Need human investigation
+           debug:
+             msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
-    - meta: end_play
+         - meta: end_play
 
-    when: "'999' in  event['record']"
+         when: "'999' in  event['record']"
 
-  - name: create readablbe solution
-    command: /usr/bin/python3
-    args:
-      stdin: |
-        import re
-        total_succ = 0
-        print("Recommended TroubleShooting Path:")
-        for t in {{ event['record'].split('==>') }}:
-            task_name = t.split('-')[0]
-            if task_name == 'start':
-              continue
-            rc = t.split('-')[1]
-            next_t = t.split('-')[2].split(':')[0]
-            weight = t.split('-')[2].split(':')[1].strip()
-            succ = int(weight)
-            total_succ += succ
-            if next_t == 'end':
-              print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
-            else:
-              print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
-        print("The recommendation path current weight is " + str(total_succ))
-        print("---------------------------------")
-        print("Actual Execution TroubleShooting Path:")
-    register: recommended_solution
+       - name: create readablbe solution
+         command: /usr/bin/python3
+         args:
+           stdin: |
+             import re
+             total_succ = 0
+             print("Recommended TroubleShooting Path:")
+             for t in {{ event['record'].split('==>') }}:
+                 task_name = t.split('-')[0]
+                 if task_name == 'start':
+                   continue
+                 rc = t.split('-')[1]
+                 next_t = t.split('-')[2].split(':')[0]
+                 weight = t.split('-')[2].split(':')[1].strip()
+                 succ = int(weight)
+                 total_succ += succ
+                 if next_t == 'end':
+                   print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
+                 else:
+                   print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
+             print("The recommendation path current weight is " + str(total_succ))
+             print("---------------------------------")
+             print("Actual Execution TroubleShooting Path:")
+         register: recommended_solution
 
-  - name: TroubleShoot Path
-    set_fact:
-      excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
+       - name: TroubleShoot Path
+         set_fact:
+           excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
 
-        #  debug: var=recommended_solution['stdout_lines']
+             #  debug: var=recommended_solution['stdout_lines']
 
  
-  - name: execute Single Tasks
-    include_tasks: "task.yaml"
-    loop: "{{ event['record'].split('==>')[1:] }}"
-    loop_control:
-      loop_var: task
+       - name: execute Single Tasks
+         include_tasks: "task.yaml"
+         loop: "{{ event['record'].split('==>')[1:] }}"
+         loop_control:
+           loop_var: task
 
-  - name: Successful TroubleShoot Path
-    debug: var=excuted_tasks
+       - name: Successful TroubleShoot Path
+         debug: var=excuted_tasks
+
+    when: "inventory_hostname == 'localhost'"
 
 #    debug:
 #      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
