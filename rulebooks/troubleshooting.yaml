@@ -73,8 +73,8 @@
       
       - name: Generate body data for KIE call
         ansible.builtin.template:
-          src: /home/jinzha/troubleshoot-01/templates/input.j2
-          dest: /home/jinzha/troubleshoot-01/files/input.json
+          src: templates/input.j2
+          dest: "{{ init_knowledge_map_dir }}/input.json"
       
       - name: Call KIE
         ansible.builtin.uri:
@@ -87,7 +87,7 @@
             accept: application/json
             Content-Type: application/json
           body_format: json
-          body: "{{ lookup('ansible.builtin.file','/home/jinzha/troubleshoot-01/files/input.json') }}"
+          body: "{{ lookup('ansible.builtin.file','{{ init_knowledge_map_dir }}/input.json') }}"
         register: result
       
       
