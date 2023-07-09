@@ -1,0 +1,5 @@
+1. bin/zookeeper-server-start.sh config/zookeeper.properties
+2. bin/kafka-server-start.sh config/server.properties
+3. bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties
+4. bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic connect-dnf --from-beginning
+5. ansible-rulebook --rulebook kafka-dnf.yml -i inventory.yml --verbose

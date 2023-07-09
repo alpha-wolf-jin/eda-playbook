@@ -118,9 +118,6 @@
 
       - name: Solution is found and add action to event queue
         block:
-        #- name: Found Solution
-        #  debug:
-        #    msg: "{{ results.stdout_lines[0] }}"
 
         - set_fact:
             solution: "{{ results.stdout_lines[0] }}"
@@ -131,9 +128,7 @@
         - name: Send event to Kafka topic to trigger troubleshooting
           ansible.builtin.shell: |
             set timeout 300
-            echo "{{ solution }}" | sed "s/'/\"/g" | bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
-          args:
-            chdir: /home/jinzha/kafka_2.13-3.3.1
+            echo "{{ solution }}" | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
         when:  results.stdout_lines[-1] | bool
 
     when: "inventory_hostname == 'localhost'"

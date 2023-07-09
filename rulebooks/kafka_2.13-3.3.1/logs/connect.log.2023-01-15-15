@@ -1,0 +1,1 @@
+[2023-01-15 15:19:58,575] INFO [local-file-source|task-0] [Producer clientId=connector-producer-local-file-source-0] Resetting the last seen epoch of partition connect-test-0 to 0 since the associated topicId changed from null to izXs4hQxRd-wZJNcY5pmJg (org.apache.kafka.clients.Metadata:402)

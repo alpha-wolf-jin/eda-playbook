@@ -1,0 +1,12 @@
+==> /var/log/dnf.log <==
+2023-01-15T16:47:29+0800 DEBUG DNF version: 4.7.0
+2023-01-15T16:47:29+0800 DDEBUG Command: dnf makecache --timer 
+2023-01-15T16:47:29+0800 DDEBUG Installroot: /
+2023-01-15T16:47:29+0800 DDEBUG Releasever: 8
+2023-01-15T16:47:29+0800 DEBUG cachedir: /var/cache/dnf
+2023-01-15T16:47:29+0800 DDEBUG Base command: makecache
+2023-01-15T16:47:29+0800 DDEBUG Extra commands: ['makecache', '--timer']
+2023-01-15T16:47:29+0800 DEBUG Making cache files for all metadata files.
+2023-01-15T16:47:29+0800 INFO Metadata cache refreshed recently.
+2023-01-15T16:47:29+0800 DDEBUG Cleaning up.
+test 01
