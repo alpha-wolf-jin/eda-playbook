@@ -4,13 +4,6 @@
   gather_facts: false
   vars:
     tasks_results:
-      'A': 0
-      'B': 0
-      'C': 0
-      'D': 0
-      'E': 0
-      'F': 0
-      'G': 0
 
       'Antivirus_Scan_Issue': 1
       'SQL_Memory_Issue': 1
@@ -100,3 +93,8 @@
 #      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
 #    loop: "{{ event['record'].split('==>') }}"
  
+  - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+    ansible.builtin.copy:
+      src: "{{ source_files[1] }}"
+      dest: "{{ init_knowledge_map_dir}}/link_data_file"
+      mode: '0644'
