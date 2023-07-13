@@ -1,5 +1,5 @@
 start,0,Antivirus_Scan_Issue,5
-Antivirus_Scan_Issue,0,Stop_Delay_Scan,9
+Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
 Antivirus_Scan_Issue,1,SQL_Memory_Issue,0
 SQL_Memory_Issue,0,Clean_DB_Memory_Heap,9
 SQL_Memory_Issue,1,OS_Memory_Issue,0
