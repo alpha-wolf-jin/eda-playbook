@@ -37,11 +37,13 @@
     
       - name: Update the network map file when result is expected
         ansible.builtin.replace:
-          path: "{{ source_files[1] }}"
+          #path: "{{ source_files[1] }}"
+          path: "{{ init_knowledge_map_dir}}/link_data_file"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
-        when: "inventory_hostname == '192.168.122.51'"
+        when: "inventory_hostname == 'localhost'"
+        #when: "inventory_hostname == '192.168.122.51'"
     
       - debug: var=result
 
@@ -59,22 +61,16 @@
     
       - name: Update the network map file - when result is not expected
         ansible.builtin.replace:
-          path: "{{ source_files[1] }}"
+          #path: "{{ source_files[1] }}"
+          path: "{{ init_knowledge_map_dir}}/link_data_file"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
           replace: '\1,\2,999'
         register: result
-        when: "inventory_hostname == '192.168.122.51'"
+        when: "inventory_hostname == 'localhost'"
+        #when: "inventory_hostname == '192.168.122.51'"
     
       - debug: var=result
 
-      - name: Update the network map file when result is expected
-        ansible.builtin.replace:
-          path: "{{ source_files[1] }}"
-          regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
-          replace: '\1,\2,0'
-        register: result
-        when: "inventory_hostname == '192.168.122.51'"
-    
       - name: Send event to find current best solution
         ansible.builtin.shell: |
           set timeout 300
@@ -84,12 +80,12 @@
       - set_fact:
           ansible_connection: ssh
 
-      #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-      #  ansible.builtin.copy:
-      #    src: "{{ init_knowledge_map_dir}}/link_data_file"
-      #    dest: "{{ source_files[1] }}"
-      #    mode: '0644'
-      #  when: "inventory_hostname == '192.168.122.51'"
+      - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+        ansible.builtin.copy:
+          src: "{{ init_knowledge_map_dir}}/link_data_file"
+          dest: "{{ source_files[1] }}"
+          mode: '0644'
+        when: "inventory_hostname == '192.168.122.51'"
 
       - set_fact:
           ansible_connection: local
