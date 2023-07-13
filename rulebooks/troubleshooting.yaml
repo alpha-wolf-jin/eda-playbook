@@ -37,8 +37,8 @@
             regexp: '999$'
             replace: '9'
         when:  
-          - event.init is defined
-          - not (event.init | bool)
+          - map_init is defined
+          - not (map_init | bool)
 
           
       - name: Retrieve data from knowledge map file
