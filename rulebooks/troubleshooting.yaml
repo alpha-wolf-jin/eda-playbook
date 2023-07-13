@@ -24,28 +24,28 @@
 
   - name: Delegate to localhost
     block:
-      - name: Init used Knowlesge Map
-        block:
-        - name: replace weight 10
-          ansible.builtin.replace:
-            path: "{{ init_knowledge_map_dir }}/link_data_file"
-            regexp: '0$'
-            replace: '1'
-        - name: replace weight 999
-          ansible.builtin.replace:
-            path: "{{ init_knowledge_map_dir }}/link_data_file"
-            regexp: '999$'
-            replace: '9'
-        when:  
-          - map_init is defined
-          - not (map_init | bool)
+      #- name: Init used Knowlesge Map
+      #  block:
+      #  - name: replace weight 10
+      #    ansible.builtin.replace:
+      #      path: "{{ init_knowledge_map_dir }}/link_data_file"
+      #      regexp: '0$'
+      #      replace: '1'
+      #  - name: replace weight 999
+      #    ansible.builtin.replace:
+      #      path: "{{ init_knowledge_map_dir }}/link_data_file"
+      #      regexp: '999$'
+      #      replace: '9'
+      #  when:  
+      #    - map_init is defined
+      #    - not (map_init | bool)
 
-      - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-        ansible.builtin.copy:
-          src: "{{ init_knowledge_map_dir}}/link_data_file"
-          dest: "{{ source_files[1] }}"
-          mode: '0644'
-        when: "inventory_hostname == '192.168.122.51'"
+      #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+      #  ansible.builtin.copy:
+      #    src: "{{ init_knowledge_map_dir}}/link_data_file"
+      #    dest: "{{ source_files[1] }}"
+      #    mode: '0644'
+      #  when: "inventory_hostname == '192.168.122.51'"
 
           
       - name: Retrieve data from knowledge map file

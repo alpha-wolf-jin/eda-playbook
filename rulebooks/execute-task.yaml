@@ -27,6 +27,19 @@
 
   tasks:
 
+  - name: Cannot find solution based on existing knowledge map
+    block:
+    - name: Need human investigation
+      debug:
+        msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+
+    - name: update knowledge map when failing to solution
+      include_tasks: Update_knowledge_map_at_end.yaml
+
+    - meta: end_play
+
+    when: "'999' in  task_list['record']"
+
   - name: info about new routing
     debug:
       msg: "{{ task_list }}"
@@ -96,6 +109,8 @@
   - name: Successful TroubleShoot Path
     debug: var=excuted_tasks
 
+  - name: update knowledge map when finding solution
+    include_tasks: Update_knowledge_map_at_end.yaml
 
 #    debug:
 #      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
