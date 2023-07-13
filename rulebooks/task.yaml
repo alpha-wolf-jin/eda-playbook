@@ -78,7 +78,7 @@
       - name: Send event to find current best solution
         ansible.builtin.shell: |
           set timeout 300
-          echo '{"implement": "Rule-Base"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic quickstart-events
+          echo '{"implement": "RuleBase"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
         when: "inventory_hostname == 'localhost'"
 
       - set_fact:
