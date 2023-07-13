@@ -77,8 +77,6 @@
           echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
         when: "inventory_hostname == 'localhost'"
 
-      - set_fact:
-          ansible_connection: ssh
 
       #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
       #  ansible.builtin.copy:
@@ -87,8 +85,6 @@
       #    mode: '0644'
       #  when: "inventory_hostname == '192.168.122.51'"
 
-      - set_fact:
-          ansible_connection: local
 
       - meta: end_play
     

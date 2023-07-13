@@ -82,30 +82,29 @@
 
              #  debug: var=recommended_solution['stdout_lines']
 
-      # - set_fact:
-      #     ansible_connection: ssh
+    when: "inventory_hostname == 'localhost'"
 
-       - name: execute Single Tasks
-         include_tasks: "task.yaml"
-         loop: "{{ task_list['record'].split('==>')[1:] }}"
-         loop_control:
-           loop_var: task
+  - set_fact:
+      ansible_connection: ssh
 
-       - name: Successful TroubleShoot Path
-         debug: var=excuted_tasks
+  - name: execute Single Tasks
+    include_tasks: "task.yaml"
+    loop: "{{ task_list['record'].split('==>')[1:] }}"
+    loop_control:
+      loop_var: task
 
-#    when: "inventory_hostname == 'localhost'"
+  - name: Successful TroubleShoot Path
+    debug: var=excuted_tasks
+
 
 #    debug:
 #      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
 #    loop: "{{ task_list['record'].split('==>') }}"
  
-  - set_fact:
-      ansible_connection: ssh
 
-  - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-    ansible.builtin.copy:
-      src: "{{ init_knowledge_map_dir}}/link_data_file"
-      dest: "{{ source_files[1] }}"
-      mode: '0644'
-    when: "inventory_hostname == '192.168.122.51'"
+#  - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+#    ansible.builtin.copy:
+#      src: "{{ init_knowledge_map_dir}}/link_data_file"
+#      dest: "{{ source_files[1] }}"
+#      mode: '0644'
+#    when: "inventory_hostname == '192.168.122.51'"
