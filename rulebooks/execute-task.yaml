@@ -33,6 +33,8 @@
   
   - name: Prepare the knowledge map on localhost
     include_tasks: fetch-knowledge-map.yaml
+    vars:
+      map_init: false
 
   - set_fact:
       ansible_connection: local
