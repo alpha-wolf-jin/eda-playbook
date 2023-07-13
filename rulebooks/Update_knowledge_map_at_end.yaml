@@ -1,14 +1,15 @@
 ---
+
 - name: replace weight 10
   ansible.builtin.replace:
-    path: "{{ init_knowledge_map_dir }}/link_data_file"
+    path: "{{ source_files[1] }}"
     regexp: '0$'
     replace: '1'
   when: "inventory_hostname == '192.168.122.51'"
 
 - name: replace weight 999
   ansible.builtin.replace:
-    path: "{{ init_knowledge_map_dir }}/link_data_file"
+    path: "{{ source_files[1] }}"
     regexp: '999$'
     replace: '9'
   when: "inventory_hostname == '192.168.122.51'"
