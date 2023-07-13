@@ -15,13 +15,13 @@
        shell: |
          cp {{ init_knowledge_map_dir }}/App_Slow_Knowledge_Map  {{ init_knowledge_map_dir }}/link_data_file
        when:  
-         - event.init is defined
-         - event.init | bool
+         - map_init is defined
+         - map_init | bool
        register: result
      
      - debug: var=result
      
      - debug:
-         msg: "{{ event }}"
+         msg: "{{ map_init }}"
      
   when: "inventory_hostname == 'localhost'"
