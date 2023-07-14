@@ -4,7 +4,9 @@
 
 
   vars:
-    rule_base_url: 'http://192.168.122.35:8080/path'
+    #rule_base_url: 'http://192.168.122.35:8080/path'
+    rule_base_url: 'http://192.168.122.51:8080/path'
+
     #rule_base_url: 'http://192.168.122.35:8080/new_task'
     start: start
     end: end
