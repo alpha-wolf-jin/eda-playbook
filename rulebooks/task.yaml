@@ -9,6 +9,7 @@
   set_fact:
     excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
   when: task.strip().split('-')[2].split(':')[1] == '0'
+  # task Antivirus_Scan_Issue-1-SQL_Memory_Issue:0
 
 - debug: var=excuted_tasks
   when: task.strip().split('-')[2].split(':')[1] == '0'
@@ -52,46 +53,53 @@
     - name: when task result is not expected
       block:
 
-      - name: update execution history
-        set_fact:
-          excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  task.strip().split('-')[0]  ] }}"
+        - name: update execution history
+          set_fact:
+            excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  task.strip().split('-')[0]  ] }}"
 
-      - name: Failed on current  TroubleShoot Path
-        debug: var=excuted_tasks
+        - name: Failed on current  TroubleShoot Path
+          debug: var=excuted_tasks
     
-      - name: Update the network map file - when result is not expected
-        ansible.builtin.replace:
-          path: "{{ source_files[1] }}"
-          #path: "{{ init_knowledge_map_dir}}/link_data_file"
-          regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
-          replace: '\1,\2,999'
-        register: result
-        #when: "inventory_hostname == 'localhost'"
-        when: "inventory_hostname == '192.168.122.51'"
+        # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,9. 
+        - name: Update the network map file - when result is not expected
+          ansible.builtin.replace:
+            path: "{{ source_files[1] }}"
+            #path: "{{ init_knowledge_map_dir}}/link_data_file"
+            regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
+            replace: '\1,\2,999'
+          register: result
+          #when: "inventory_hostname == 'localhost'"
+          when: "inventory_hostname == '192.168.122.51'"
     
-      - debug: var=result
+        - name: Update the network map file for matching item in map file
+          ansible.builtin.replace:
+            path: "{{ home_dir }}/files/link_data_file"
+            regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
+            replace: '\1,\2,0'
+          register: result
+          when: "inventory_hostname == '192.168.122.51'"
 
-      - set_fact:
-          ansible_connection: local
+        - set_fact:
+            ansible_connection: local
 
-      - name: Send event to find current best solution
-        ansible.builtin.shell: |
-          set timeout 300
-          echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
-        when: "inventory_hostname == 'localhost'"
+        - name: Send event to find current best solution
+          ansible.builtin.shell: |
+            set timeout 300
+            echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
+          when: "inventory_hostname == 'localhost'"
 
-      - set_fact:
-          ansible_connection: ssh
+        - set_fact:
+            ansible_connection: ssh
 
-      #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-      #  ansible.builtin.copy:
-      #    src: "{{ init_knowledge_map_dir}}/link_data_file"
-      #    dest: "{{ source_files[1] }}"
-      #    mode: '0644'
-      #  when: "inventory_hostname == '192.168.122.51'"
+        #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+        #  ansible.builtin.copy:
+        #    src: "{{ init_knowledge_map_dir}}/link_data_file"
+        #    dest: "{{ source_files[1] }}"
+        #    mode: '0644'
+        #  when: "inventory_hostname == '192.168.122.51'"
 
 
-      - meta: end_play
+        - meta: end_play
     
       when: task.strip().split('-')[1] != task_result
   
