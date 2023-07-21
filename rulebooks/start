@@ -1,9 +1,27 @@
 
+
+# podman ps -a
+CONTAINER ID  IMAGE                                                                          COMMAND     CREATED       STATUS             PORTS       NAMES
+baa5fec4911f  localhost/rulebas-01:latest                                                    /bin/bash   5 days ago    Up About a minute              rulebase-02
+
+# podman start baa5fec4911f
+
+[root@aap-eda rulebooks]# podman logs baa5fec4911f
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2023-07-15 06:32:01,597 INFO  [io.qua.sma.ope.run.OpenApiRecorder] (main) CORS filtering is disabled and cross-origin resource sharing is allowed without restriction, which is not recommended in production. Please configure the CORS filter through 'quarkus.http.cors.*' properties. For more information, see Quarkus HTTP CORS documentation
+2023-07-15 06:32:01,687 INFO  [io.quarkus] (main) rules-lab01 1.0.0-SNAPSHOT on JVM (powered by Quarkus 2.16.4.Final) started in 0.901s. Listening on: http://0.0.0.0:8080
+2023-07-15 06:32:01,689 INFO  [io.quarkus] (main) Profile prod activated. 
+2023-07-15 06:32:01,690 INFO  [io.quarkus] (main) Installed features: [cdi, kogito-decisions, kogito-predictions, kogito-processes, kogito-rules, resteasy, resteasy-jackson, smallrye-context-propagation, smallrye-health, smallrye-openapi, vertx]
+
+
 ansible-rulebook --rulebook troubleshoot-rule-eda.yaml -i inventory.yml --verbose
 
-$ echo '{"implement": "RuleBase", "init": "True"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
+$ echo '{"implement": "RuleBase", "init": "True"}' | sed "s/'/\"/g" | ./kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
 
-$ echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
+$ echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | ./kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
 
-# echo '{"implement": "RuleBase"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.33:9092 --topic aap
+# echo '{"implement": "RuleBase"}' | sed "s/'/\"/g" | ~/kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
 
