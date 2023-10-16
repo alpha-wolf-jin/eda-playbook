@@ -18,7 +18,7 @@
      
      - name: use the initial knowledge map on local host
        shell: |
-         grep "^[A-Z,a-z]" {{ source_files[0] }}  {{ source_files[1] }}
+         grep "^[A-Z,a-z]" {{ source_files[0] }} > {{ source_files[1] }}
        when: "inventory_hostname == '192.168.122.51'"
   when:  
     - map_init is defined
