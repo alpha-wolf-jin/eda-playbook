@@ -50,10 +50,6 @@
     - name: start the workflow given by rule base
       include_tasks: loop-mem-execute-recommendation.yaml
       vars:
-        rule_base_url: 'http://192.168.122.51:8080/path'
-        start: start
-        end: end
-        start_result: 2
         source_files:
           - '/root/ansi/files/Memory_Knowledge_Map'
           - '/root/ansi/files/memory_link_data_file'
