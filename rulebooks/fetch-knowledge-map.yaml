@@ -1,4 +1,9 @@
 ---
+# Manage the knowledge map file 
+# 1. copy the knowledge map files to the container
+# 2. Create the work map file from initial map file. The work map file will be updated during the execution.
+
+# Copy the original map file and work map file to the container
 - name: Store file into /tmp/192.168.122.51/{{ home_dir }}
   ansible.builtin.fetch:
     src: "{{ item }}"
@@ -9,6 +14,8 @@
 
 - debug: var=result
 
+# If needed, copy the original map file to work map file
+# on both file server and container
 - name: tasks on localhost
   block:
      - name: use the initial knowledge map on local host
