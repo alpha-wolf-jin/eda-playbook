@@ -26,8 +26,7 @@
     init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
 
     sub_workflow_with_rule_base: 
-      - ''
-#    - Memory_Issue
+    - Memory_Issue
 
   tasks:
   - include_tasks: execute-recommendation.yaml
