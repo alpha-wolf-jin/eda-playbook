@@ -18,7 +18,7 @@
   set_fact:
     task_name: "{{  task.strip().split('-')[0] }}"
 
-- name: Execute new task 
+- name: Execute new task with standard workflow
   block:
     - set_fact:
         task_result: "{{  tasks_results[task_name] }}"  
@@ -43,3 +43,14 @@
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'
   - task_name not in sub_workflow_with_rule_base
+
+
+- name: Execute new task with standard workflow
+  block:
+    - name: start the workflow given by rule base
+      import_palybook: loop-all-actions.yml
+
+  when: 
+  - task.strip().split('-')[2].split(':')[1] != '0'
+  - task_name in sub_workflow_with_rule_base
+

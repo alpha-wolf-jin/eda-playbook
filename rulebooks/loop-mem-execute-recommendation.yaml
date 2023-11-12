@@ -15,5 +15,5 @@
 
 - include_tasks: loop_mem-execute-recommendation.yaml
   when: 
-  - counter | int < 5
+  - counter | int < loop_counter | int
   - success is not defined
