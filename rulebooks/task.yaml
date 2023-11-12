@@ -27,20 +27,20 @@
   - task.strip().split('-')[2].split(':')[1] != '0'
 
 - set_fact:
-     task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
+    task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
 
  #- debug: var=task_status
 
- - name: update execution history
-   set_fact:
-     excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+- name: update execution history
+  set_fact:
+    excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
 
- #- debug: var=task_status
+#- debug: var=task_status
 
- - name: when task result is expected
-   include_tasks: task-not-as-expected.yaml
+- name: when task result is expected
+  include_tasks: task-not-as-expected.yaml
 
- - name: when task result is not expected
-   include_tasks: task-as-expected.yaml
+- name: when task result is not expected
+  include_tasks: task-as-expected.yaml
 
 
