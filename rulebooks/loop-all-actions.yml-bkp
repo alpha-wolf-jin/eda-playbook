@@ -1,0 +1,34 @@
+---
+#- name: troubleshoot
+#  hosts: all
+#  gather_facts: false
+#
+#  vars:
+#    rule_base_url: 'http://192.168.122.51:8080/path'
+#
+#    start: start
+#    end: end
+#    start_result: 2
+#
+#    source_files:
+#      - '/root/ansi/files/Memory_Knowledge_Map'
+#      - '/root/ansi/files/memory_link_data_file'
+#
+#    init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+#
+#    tasks_results:
+#      'SQL_Memory_Issue': 1
+#      'OS_Memory_Issue': 1
+#      'Log_Ticket': 0
+#      'Clean_DB_Memory_Heap': 0
+#      'Flush_OS_Cache_Memory': 0
+#
+#    excuted_tasks: []
+#
+#    loop_counter: 5
+#
+#  tasks:
+
+- debug:
+    msg: 'test'
+#    - include_tasks: loop-mem-execute-recommendation.yaml
