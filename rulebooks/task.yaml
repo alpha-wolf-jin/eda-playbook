@@ -1,7 +1,11 @@
 ---
 
+# Handle the single task from the recommendation
+
 - debug: var=task
 
+# Once the task was executed before (weight is zero)
+# Update the varialbe excuted_tasks as skip task 
 - name: update execution history
   set_fact:
     excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
@@ -10,7 +14,8 @@
 - debug: var=excuted_tasks
   when: task.strip().split('-')[2].split(':')[1] == '0'
 
-- name: skip this task if it was executed before
+
+- name: Execute new task 
   block:
     - set_fact:
         task_name: "{{  task.strip().split('-')[0] }}"
@@ -32,13 +37,14 @@
     - name: when task result is expected
       block:
     
-      - name: Update the network map file when result is expected
+      # when the executed task return is expected,
+      # update the related task weight as 0 on the file server
+      - name: Update the network map file when result is expected (weight 0)
         ansible.builtin.replace:
           path: "{{ source_files[1] }}"
           regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
           replace: '\1,\2,0'
         register: result
-        #when: "inventory_hostname == 'localhost'"
         when: "inventory_hostname == '192.168.122.51'"
     
       - debug: var=result
@@ -55,7 +61,9 @@
         - name: Failed on current  TroubleShoot Path
           debug: var=excuted_tasks
     
-        # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,9. 
+        # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
+        # when the executed task return is not expected,
+        # update the related task weight as 999 on the file server
         - name: Update the network map file - when result is not expected
           ansible.builtin.replace:
             path: "{{ source_files[1] }}"
@@ -63,9 +71,11 @@
             regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
             replace: '\1,\2,999'
           register: result
-          #when: "inventory_hostname == 'localhost'"
           when: "inventory_hostname == '192.168.122.51'"
     
+        # This is for the scenario which return is either 0 or 1
+        # When the other return code is with weight 999
+        # this return code should be with weight 0
         - name: Update the network map file for matching item in map file
           ansible.builtin.replace:
             path: "{{ source_files[1] }}"
@@ -77,7 +87,9 @@
         - set_fact:
             ansible_connection: local
 
-        - name: Send event to find current best solution
+        # Current recommendation cannot work since this task failed
+        # Need the next solution
+        - name: Send event to find next best solution
           ansible.builtin.shell: |
             set timeout 300
             echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
@@ -86,14 +98,7 @@
         - set_fact:
             ansible_connection: ssh
 
-        #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-        #  ansible.builtin.copy:
-        #    src: "{{ init_knowledge_map_dir}}/link_data_file"
-        #    dest: "{{ source_files[1] }}"
-        #    mode: '0644'
-        #  when: "inventory_hostname == '192.168.122.51'"
-
-
+        # Since Current recommendation cannot work. Let the entire excution end
         - meta: end_play
     
       when: task.strip().split('-')[1] != task_result
