@@ -4,10 +4,8 @@
 
 
   vars:
-    #rule_base_url: 'http://192.168.122.35:8080/path'
     rule_base_url: 'http://192.168.122.51:8080/path'
 
-    #rule_base_url: 'http://192.168.122.35:8080/new_task'
     start: start
     end: end
     start_result: 2
@@ -26,33 +24,10 @@
 
   - name: Delegate to localhost
     block:
-      #- name: Init used Knowlesge Map
-      #  block:
-      #  - name: replace weight 10
-      #    ansible.builtin.replace:
-      #      path: "{{ init_knowledge_map_dir }}/link_data_file"
-      #      regexp: '0$'
-      #      replace: '1'
-      #  - name: replace weight 999
-      #    ansible.builtin.replace:
-      #      path: "{{ init_knowledge_map_dir }}/link_data_file"
-      #      regexp: '999$'
-      #      replace: '9'
-      #  when:  
-      #    - map_init is defined
-      #    - not (map_init | bool)
-
-      #- name: Copy link_data_file to remote server. Otherwise, it will lost in container.
-      #  ansible.builtin.copy:
-      #    src: "{{ init_knowledge_map_dir}}/link_data_file"
-      #    dest: "{{ source_files[1] }}"
-      #    mode: '0644'
-      #  when: "inventory_hostname == '192.168.122.51'"
-
           
-      - name: Retrieve data from knowledge map file
+      - name: Retrieve data from work knowledge map file
         set_fact:
-          raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/link_data_file').split('\n') }}"
+          raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}').split('\n') }}"
           path_data: []
       
       - name: Convert raw data to j2 input data - list of list
@@ -82,14 +57,13 @@
           body: "{{ lookup('ansible.builtin.file','{{ init_knowledge_map_dir }}/input.json') }}"
         register: result
       
-      
           
       - name: Recommended Solutions
         set_fact:
           kie_facts: "{{ result['json'] }}"
 
 
-      - name: check if new routing is found
+      - name: check if new solution is found
         command: /usr/bin/python3
         args:
           stdin: |
@@ -104,7 +78,7 @@
         register: results
 
       - name: Failed to find Solution
-        debug:
+        fail:
           msg: "Failed to find Solution"
         when:  not results.stdout_lines[-1] | bool
 
