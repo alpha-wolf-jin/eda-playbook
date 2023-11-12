@@ -64,6 +64,7 @@
         loop_counter: 5
         start: start
         end: end
+        rule_base_url: 'http://192.168.122.51:8080/path'
 
 
       #import_palybook: loop-all-actions.yml
