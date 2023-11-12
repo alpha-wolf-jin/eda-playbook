@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     tasks_results:
-
+      'Memory_Issue': 0
       'Antivirus_Scan_Issue': 1
       'SQL_Memory_Issue': 1
       'OS_Memory_Issue': 1
@@ -25,8 +25,9 @@
 
     init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
 
-    sub_workflow_with_rule_base:
-    - Memory_Issue
+    sub_workflow_with_rule_base: 
+      - ''
+#    - Memory_Issue
 
   tasks:
   - include_tasks: execute-recommendation.yaml
