@@ -84,7 +84,6 @@
         set_fact:
           excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
 
-            #  debug: var=recommended_solution['stdout_lines']
       when: '999' not in  task_list['record']
 
   when: "inventory_hostname == 'localhost'"
