@@ -28,6 +28,11 @@
       ansible.builtin.template:
         src: templates/input.j2
         dest: "{{ init_knowledge_map_dir }}/input.json"
+      register: result
+
+    - debug: var=result
+
+    - fail:
     
     - name: Call KIE for rcommended solution
       ansible.builtin.uri:
