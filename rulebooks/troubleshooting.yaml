@@ -22,7 +22,7 @@
     include_tasks: fetch-knowledge-map.yaml
           
 
-  - name: Delegate to localhost
+  - name: Delegate to localhost and call Rule-base for solution
     block:
           
       - name: Retrieve data from work knowledge map file
@@ -77,6 +77,8 @@
             print(find_solution)
         register: results
 
+      # when knowledge is poorly definded,
+      # no sulution can be recommended.
       - name: Failed to find Solution
         fail:
           msg: "Failed to find Solution"

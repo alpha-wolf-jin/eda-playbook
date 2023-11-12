@@ -1,5 +1,5 @@
 ---
-- name: Apply the recommendataion
+- name: Configure New Routing
   hosts: all
   gather_facts: false
   vars:
@@ -27,8 +27,6 @@
 
   tasks:
 
-  # All recommendations do not work for current issue
-  # The rule base recommends un-worked solution we tried before.
   - name: Cannot find solution based on existing knowledge map
     block:
     - name: Need human investigation
@@ -42,12 +40,10 @@
 
     when: "'999' in  task_list['record']"
 
-
-  - name: info about new solution
+  - name: info about new routing
     debug:
       msg: "{{ task_list }}"
   
-  # copy the latest knowledge map into the container
   - name: Prepare the knowledge map on localhost
     include_tasks: fetch-knowledge-map.yaml
     vars:
@@ -58,7 +54,6 @@
 
   - name: tasks on localhost
     block:
-       # double check to ensure this soluiotn is not solution we tried before 
        - name: Cannot find solution based on existing knowledge map
          block:
          - name: Need human investigation
@@ -69,7 +64,6 @@
 
          when: "'999' in  task_list['record']"
 
-       # Break the recommendation into task list 
        - name: create readablbe solution
          command: /usr/bin/python3
          args:
@@ -95,7 +89,6 @@
              print("Actual Execution TroubleShooting Path:")
          register: recommended_solution
 
-       # Initialize the excuted_tasks with recommende execution plan
        - name: TroubleShoot Path
          set_fact:
            excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
@@ -107,19 +100,26 @@
   - set_fact:
       ansible_connection: ssh
 
-  # Execute the recommende execution plan
   - name: execute Single Tasks
     include_tasks: "task.yaml"
     loop: "{{ task_list['record'].split('==>')[1:] }}"
     loop_control:
       loop_var: task
 
-  # print the recommend plan and actual result
-  # when it succeeds.
   - name: Successful TroubleShoot Path
     debug: var=excuted_tasks
 
-  # update the work map
   - name: update knowledge map when finding solution
     include_tasks: Update_knowledge_map_at_end.yaml
 
+#    debug:
+#      msg: "{{ item.split('-')[0] }} Result : {{ item.split('-')[1] }} }}"
+#    loop: "{{ task_list['record'].split('==>') }}"
+ 
+
+#  - name: Copy link_data_file to remote server. Otherwise, it will lost in container.
+#    ansible.builtin.copy:
+#      src: "{{ init_knowledge_map_dir}}/link_data_file"
+#      dest: "{{ source_files[1] }}"
+#      mode: '0644'
+#    when: "inventory_hostname == '192.168.122.51'"
