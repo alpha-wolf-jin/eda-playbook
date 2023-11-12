@@ -17,4 +17,4 @@
     init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
 
   tasks:
-  - include_tasks: mem-troubleshooting.yaml
+  - include_tasks: recommendation.yaml
