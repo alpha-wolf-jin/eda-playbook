@@ -3,17 +3,7 @@
 # All recommendations do not work for current issue
 # The rule base recommends un-worked solution we tried before.
 - name: Cannot find solution based on existing knowledge map
-  block:
-  - name: Need human investigation
-    debug:
-      msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
-
-  - name: update knowledge map when failing to solution
-    include_tasks: Update_knowledge_map_at_end.yaml
-
-  - meta: end_play
-
-  when: "'999' in  task_list['record']"
+  include_tasks: no-solution.yaml
 
 
 - name: info about new solution
@@ -33,16 +23,9 @@
   block:
      # double check to ensure this soluiotn is not solution we tried before 
      - name: Cannot find solution based on existing knowledge map
-       block:
-       - name: Need human investigation
-         debug:
-           msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+       include_tasks: no-solution.yaml
 
-       - meta: end_play
-
-       when: "'999' in  task_list['record']"
-
-     # Break the recommendation into task list 
+     # Generate readable recommendation plan
      - name: create readablbe solution
        command: /usr/bin/python3
        args:

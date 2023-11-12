@@ -3,8 +3,9 @@
   connection: local
   vars:
   tasks:
+    - set_fact: 
+        continue_task: True
+
     - include: test.yml
       loop: ["abc","def", "ghi",1, "jkl"]
 
-    - name: increase var1 variable by 1 and write to text file
-      shell: expr {{var1}} + 1 > text

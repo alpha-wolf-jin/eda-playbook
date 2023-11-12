@@ -11,7 +11,12 @@
   - name: update knowledge map when failing to solution
     include_tasks: Update_knowledge_map_at_end.yaml
 
+  # task exit point 01
   - meta: end_play
+
+  - name: Set var success
+    set_fact:
+      success: False
 
   when: "'999' in  task_list['record']"
 
@@ -38,6 +43,7 @@
          debug:
            msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
+       # task exit point 02
        - meta: end_play
 
        when: "'999' in  task_list['record']"
@@ -80,24 +86,32 @@
 - set_fact:
     ansible_connection: ssh
 
+- name: mark there is the failure of task
+  set_fact: 
+    continue_task: True
+
 # Execute the recommende execution plan
 # Any task failur will cause the play end
 # If the loop is end wihout failire, it means the recommendation works
 - name: execute recommendation task by task 
-  include_tasks: "task.yaml"
+  include_tasks: "mem-task.yaml"
   loop: "{{ task_list['record'].split('==>')[1:] }}"
   loop_control:
     loop_var: task
 
-# print the recommend plan and actual result
-# when it succeeds.
-- name: Successful TroubleShoot Path
-  debug: var=excuted_tasks
+- name: continue when all tasks completed as expected
+  block:
+  # print the recommend plan and actual result
+  # when it succeeds.
+  - name: Successful TroubleShoot Path
+    debug: var=excuted_tasks
+  
+  # update the work map
+  - name: update knowledge map when finding solution
+    include_tasks: Update_knowledge_map_at_end.yaml
+  
+  - name: Set var success
+    set_fact:
+      success: True
+  when: continue_task | bool
 
-# update the work map
-- name: update knowledge map when finding solution
-  include_tasks: Update_knowledge_map_at_end.yaml
-
-- name: Set var success
-  set_fact:
-    success: True

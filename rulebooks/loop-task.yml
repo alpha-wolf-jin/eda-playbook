@@ -9,5 +9,9 @@
 - debug:
     msg: "Hello!"
 
+- include: test.yml
+  when: var1 is not defined
+  loop: ["abc","def", "ghi",1, "jkl"]
+
 - include_tasks: loop-task.yml
   when: counter | int < 5
