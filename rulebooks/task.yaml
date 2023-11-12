@@ -2,7 +2,7 @@
 
 # Handle the single task from the recommendation
 
-- debug: var=task
+#- debug: var=task
 
 # Once the task was executed before (weight is zero)
 # Update the varialbe excuted_tasks as skip task 
@@ -11,8 +11,8 @@
     excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
   when: task.strip().split('-')[2].split(':')[1] == '0'
 
-- debug: var=excuted_tasks
-  when: task.strip().split('-')[2].split(':')[1] == '0'
+#- debug: var=excuted_tasks
+#  when: task.strip().split('-')[2].split(':')[1] == '0'
 
 
 - name: Execute new task 
@@ -26,13 +26,13 @@
     - set_fact:
         task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
 
-    - debug: var=task_status
+    #- debug: var=task_status
 
     - name: update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
 
-    - debug: var=task_status
+    #- debug: var=task_status
 
     - name: when task result is expected
       include_tasks: task-not-as-expected.yaml
