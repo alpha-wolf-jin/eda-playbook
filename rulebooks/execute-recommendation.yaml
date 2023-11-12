@@ -98,6 +98,3 @@
 - name: update knowledge map when finding solution
   include_tasks: Update_knowledge_map_at_end.yaml
 
-- name: Set var success
-  set_fact:
-    success: True
