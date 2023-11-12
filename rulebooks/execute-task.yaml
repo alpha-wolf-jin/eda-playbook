@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     tasks_results:
-      'Memory_Issue': 0
+      'Memory_Issue': 1
       'Antivirus_Scan_Issue': 1
       'SQL_Memory_Issue': 1
       'OS_Memory_Issue': 1
