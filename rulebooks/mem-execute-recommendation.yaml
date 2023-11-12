@@ -12,14 +12,13 @@
     include_tasks: Update_knowledge_map_at_end.yaml
 
   # task exit point 01
-  - meta: end_play
+  #- meta: end_play
 
-  - name: Set var success
+  - name: No New Solution
     set_fact:
-      success: False
+      find_solution: False
 
   when: "'999' in  task_list['record']"
-
 
 - name: info about new solution
   debug:
@@ -36,82 +35,91 @@
 
 - name: tasks on localhost
   block:
-     # double check to ensure this soluiotn is not solution we tried before 
-     - name: Cannot find solution based on existing knowledge map
-       block:
-       - name: Need human investigation
-         debug:
-           msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+    # double check to ensure this soluiotn is not solution we tried before 
+    - name: Cannot find solution based on existing knowledge map
+      block:
+      - name: Need human investigation
+        debug:
+          msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
-       # task exit point 02
-       - meta: end_play
+      # task exit point 02
+      #- meta: end_play
 
-       when: "'999' in  task_list['record']"
+      - name: No New Solution
+        set_fact:
+          find_solution: False
 
-     # Break the recommendation into task list 
-     - name: create readablbe solution
-       command: /usr/bin/python3
-       args:
-         stdin: |
-           import re
-           total_succ = 0
-           print("Recommended TroubleShooting Path:")
-           for t in {{ task_list['record'].split('==>') }}:
-               task_name = t.split('-')[0]
-               if task_name == 'start':
-                 continue
-               rc = t.split('-')[1]
-               next_t = t.split('-')[2].split(':')[0]
-               weight = t.split('-')[2].split(':')[1].strip()
-               succ = int(weight)
-               total_succ += succ
-               if next_t == 'end':
-                 print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
-               else:
-                 print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
-           print("The recommendation path current weight is " + str(total_succ))
-           print("---------------------------------")
-           print("Actual Execution TroubleShooting Path:")
-       register: recommended_solution
+      when: "'999' in  task_list['record']"
 
-     # Initialize the excuted_tasks with recommende execution plan
-     - name: TroubleShoot Path
-       set_fact:
-         excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
+    - name: There is new solution
+      block:
+      # Break the recommendation into task list 
+      - name: create readablbe solution
+        command: /usr/bin/python3
+        args:
+          stdin: |
+            import re
+            total_succ = 0
+            print("Recommended TroubleShooting Path:")
+            for t in {{ task_list['record'].split('==>') }}:
+                task_name = t.split('-')[0]
+                if task_name == 'start':
+                  continue
+                rc = t.split('-')[1]
+                next_t = t.split('-')[2].split(':')[0]
+                weight = t.split('-')[2].split(':')[1].strip()
+                succ = int(weight)
+                total_succ += succ
+                if next_t == 'end':
+                  print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
+                else:
+                  print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
+            print("The recommendation path current weight is " + str(total_succ))
+            print("---------------------------------")
+            print("Actual Execution TroubleShooting Path:")
+        register: recommended_solution
 
-           #  debug: var=recommended_solution['stdout_lines']
+      # Initialize the excuted_tasks with recommende execution plan
+      - name: TroubleShoot Path
+        set_fact:
+          excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
+
+            #  debug: var=recommended_solution['stdout_lines']
+      when: '999' not in  task_list['record']
 
   when: "inventory_hostname == 'localhost'"
 
 - set_fact:
     ansible_connection: ssh
 
-- name: mark there is the failure of task
-  set_fact: 
-    continue_task: True
-
-# Execute the recommende execution plan
-# Any task failur will cause the play end
-# If the loop is end wihout failire, it means the recommendation works
-- name: execute recommendation task by task 
-  include_tasks: "mem-task.yaml"
-  loop: "{{ task_list['record'].split('==>')[1:] }}"
-  loop_control:
-    loop_var: task
-
-- name: continue when all tasks completed as expected
+- name: Apply new solution
   block:
-  # print the recommend plan and actual result
-  # when it succeeds.
-  - name: Successful TroubleShoot Path
-    debug: var=excuted_tasks
-  
-  # update the work map
-  - name: update knowledge map when finding solution
-    include_tasks: Update_knowledge_map_at_end.yaml
-  
-  - name: Set var success
-    set_fact:
-      success: True
-  when: continue_task | bool
+    - name: mark there is the failure of task
+      set_fact: 
+        continue_task: True
 
+    # Execute the recommende execution plan
+    # Any task failur will cause the play end
+    # If the loop is end wihout failire, it means the recommendation works
+    - name: execute recommendation task by task 
+      include_tasks: "mem-task.yaml"
+      loop: "{{ task_list['record'].split('==>')[1:] }}"
+      loop_control:
+        loop_var: task
+    
+    - name: continue when all tasks completed as expected
+      block:
+      # print the recommend plan and actual result
+      # when it succeeds.
+      - name: Successful TroubleShoot Path
+        debug: var=excuted_tasks
+      
+      # update the work map
+      - name: update knowledge map when finding solution
+        include_tasks: Update_knowledge_map_at_end.yaml
+      
+      - name: Set var success
+        set_fact:
+          success: True
+      when: continue_task | bool
+  when: '999' not in  task_list['record']

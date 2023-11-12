@@ -45,11 +45,27 @@
   - task_name not in sub_workflow_with_rule_base
 
 
-- name: Execute new task with standard workflow
+- name: Execute new task with Rule-base workflow
   block:
     - name: start the workflow given by rule base
       import_palybook: loop-all-actions.yml
 
+    - set_fact:
+        task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
+    
+     #- debug: var=task_status
+    
+    - name: update execution history
+      set_fact:
+        excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+    
+    #- debug: var=task_status
+    
+    - name: when task result is expected
+      include_tasks: task-not-as-expected.yaml
+    
+    - name: when task result is not expected
+      include_tasks: task-as-expected.yaml
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'
   - task_name in sub_workflow_with_rule_base

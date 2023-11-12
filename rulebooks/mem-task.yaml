@@ -38,22 +38,11 @@
       - debug: var=task_status
   
       - name: when task result is expected
-        block:
-      
-        # when the executed task return is expected,
-        # update the related task weight as 0 on the file server
-        - name: Update the network map file when result is expected (weight 0)
-          ansible.builtin.replace:
-            path: "{{ source_files[1] }}"
-            regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
-            replace: '\1,\2,0'
-          register: result
-          when: "inventory_hostname == '192.168.122.51'"
-      
-        - debug: var=result
-  
-        when: task.strip().split('-')[1] == task_result
+        include_tasks: task-as-expected.yaml
    
+      - name: when task result is not expected
+        include_tasks: task-as-expected.yaml
+
       - name: when task result is not expected
         block:
   
@@ -87,16 +76,6 @@
             register: result
             when: "inventory_hostname == '192.168.122.51'"
   
-          - set_fact:
-              ansible_connection: local
-  
-          # Current recommendation cannot work since this task failed
-          # Need the next solution
-          - name: Send event to find next best solution
-            ansible.builtin.shell: |
-              set timeout 300
-              echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
-            when: "inventory_hostname == 'localhost'"
   
           - set_fact:
               ansible_connection: ssh

@@ -1,7 +1,13 @@
 ---
+
 - name: Prepare the knowledge map on localhost
   include_tasks: fetch-knowledge-map.yaml
         
+
+- name: Default "find Solution"
+  set_fact:
+    find_solution: True
+
 - name: Delegate to localhost and call Rule-base for solution
   block:
         
@@ -60,8 +66,13 @@
     # when knowledge is poorly definded,
     # no sulution can be recommended.
     - name: Failed to find Solution
-      fail:
+      debug:
         msg: "Failed to find Solution"
+      when:  not results.stdout_lines[-1] | bool
+
+    - name: Failed to find Solution
+      set_fact:
+        find_solution: False
       when:  not results.stdout_lines[-1] | bool
 
     - name: Solution is found and add action to event queue

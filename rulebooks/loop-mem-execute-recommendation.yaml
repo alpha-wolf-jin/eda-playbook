@@ -8,12 +8,16 @@
 
 - include_tasks: mem-troubleshooting.yaml
 
-- include_tasks: mem-execute-recommendation.yaml
+- name: set task result as 1 (failure)
+  set_fact:
+    task_result: 1
+  when not find_solution | bool
 
-#- set_fact: var1={{item}}
-#  when: cmd_stat.rc == 0
+- include_tasks: mem-execute-recommendation.yaml
+  when: find_solution | bool
 
 - include_tasks: loop_mem-execute-recommendation.yaml
   when: 
   - counter | int < loop_counter | int
   - success is not defined
+  - find_solution | bool
