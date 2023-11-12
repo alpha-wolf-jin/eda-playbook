@@ -11,7 +11,7 @@
 - name: set task result as 1 (failure)
   set_fact:
     task_result: 1
-  when not find_solution | bool
+  when: not find_solution | bool
 
 - include_tasks: mem-execute-recommendation.yaml
   when: find_solution | bool
