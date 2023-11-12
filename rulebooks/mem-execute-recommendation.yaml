@@ -121,4 +121,4 @@
         set_fact:
           success: True
       when: continue_task | bool
-  when: '999' not in  task_list['record']
+  when: "'999' not in  task_list['record']"
