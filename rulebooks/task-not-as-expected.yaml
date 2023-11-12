@@ -1,0 +1,20 @@
+---
+
+
+- name: when task result is expected
+  block:
+
+  # when the executed task return is expected,
+  # update the related task weight as 0 on the file server
+  - name: Update the network map file when result is expected (weight 0)
+    ansible.builtin.replace:
+      path: "{{ source_files[1] }}"
+      regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
+      replace: '\1,\2,0'
+    register: result
+    when: "inventory_hostname == '192.168.122.51'"
+
+  - debug: var=result
+
+  when: task.strip().split('-')[1] == task_result
+

@@ -5,7 +5,6 @@
 - name: Cannot find solution based on existing knowledge map
   include_tasks: no-solution.yaml
 
-
 - name: info about new solution
   debug:
     msg: "{{ task_list }}"
@@ -55,8 +54,6 @@
      - name: TroubleShoot Path
        set_fact:
          excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
-
-           #  debug: var=recommended_solution['stdout_lines']
 
   when: "inventory_hostname == 'localhost'"
 

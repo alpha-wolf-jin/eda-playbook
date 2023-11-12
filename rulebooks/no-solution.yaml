@@ -13,7 +13,3 @@
 
   when: "'999' in  task_list['record']"
 
-
-- name: info about new solution
-  debug:
-    msg: "{{ task_list }}"
