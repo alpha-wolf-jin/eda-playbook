@@ -60,6 +60,10 @@
 - set_fact:
     ansible_connection: ssh
 
+- name: info about new solution
+  debug:
+    msg: "{{ task_list['record'].split('==>')[1:] }}"
+
 # Execute the recommende execution plan
 # Any task failur will cause the play end
 # If the loop is end wihout failire, it means the recommendation works
