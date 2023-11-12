@@ -1,0 +1,8 @@
+- block:
+  - shell: expr {{item}} + 1
+    ignore_errors: yes
+    register: cmd_stat
+
+  - set_fact: var1={{item}}
+    when: cmd_stat.rc == 0
+  when: var1 is not defined

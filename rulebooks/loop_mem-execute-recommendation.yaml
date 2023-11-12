@@ -1,0 +1,19 @@
+---
+- name: Increase counter.
+  set_fact:
+    counter: "{{ counter | default(-1) | int + 1 }}"
+
+- debug:
+    msg: "{{ counter | int }}"
+
+- include_tasks: mem-troubleshooting.yaml
+
+- include_tasks: mem-execute-task.yaml
+
+#- set_fact: var1={{item}}
+#  when: cmd_stat.rc == 0
+
+- include_tasks: loop_mem-execute-recommendation.yaml
+  when: 
+  - counter | int < 5
+  - success is not defined

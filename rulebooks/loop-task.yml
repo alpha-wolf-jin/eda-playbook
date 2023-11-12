@@ -1,0 +1,13 @@
+---
+- name: Increase counter.
+  set_fact:
+    counter: "{{ counter | default(-1) | int + 1 }}"
+
+- debug:
+    msg: "{{ counter | int }}"
+
+- debug:
+    msg: "Hello!"
+
+- include_tasks: loop-task.yml
+  when: counter | int < 5
