@@ -1,0 +1,116 @@
+- name: troubleshoot
+  hosts: all
+  gather_facts: false
+
+
+  vars:
+    rule_base_url: 'http://192.168.122.51:8080/path'
+
+    start: start
+    end: end
+    start_result: 2
+
+    source_files:
+      - '/root/ansi/files/Memory_Knowledge_Map'
+      - '/root/ansi/files/memory_link_data_file'
+
+    init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+
+    tasks_results:
+      'Antivirus_Scan_Issue': 1
+      'SQL_Memory_Issue': 1
+      'OS_Memory_Issue': 1
+      'Network_GateWay_Issue': 0
+      'Web_Pool_Issue': 0
+      'Log_Ticket': 0
+      'Stop_Delay_Scan': 0
+      'Clean_DB_Memory_Heap': 0
+      'Flush_OS_Cache_Memory': 0
+      'Fix_Default_Gateway': 0
+      'Fix_WebApp_connection_Pools': 0
+
+    excuted_tasks: []
+
+  tasks:
+
+  - name: Prepare the knowledge map on localhost
+    include_tasks: fetch-knowledge-map.yaml
+          
+
+  - name: Delegate to localhost
+    block:
+
+      - name: Retrieve data from knowledge map file
+        set_fact:
+          raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/memory_link_data_file').split('\n') }}"
+          path_data: []
+      
+      - name: Convert raw data to j2 input data - list of list
+        set_fact:
+          path_data: "{{ path_data + [ line.split(',') ] }}"
+        loop: "{{ raw_path_data }}"
+        loop_control:
+          loop_var: line
+      
+      
+      - name: Generate body data for KIE call
+        ansible.builtin.template:
+          src: templates/input.j2
+          dest: "{{ init_knowledge_map_dir }}/mem_input.json"
+      
+      - name: Call KIE for rcommended solution
+        ansible.builtin.uri:
+          url: "{{ rule_base_url }}"
+          method: POST
+          status_code: [201, 200]
+          return_content: true
+          validate_certs: no
+          headers:
+            accept: application/json
+            Content-Type: application/json
+          body_format: json
+          body: "{{ lookup('ansible.builtin.file','{{ init_knowledge_map_dir }}/mem_input.json') }}"
+        register: result
+      
+      
+          
+      - name: Recommended Solutions
+        set_fact:
+          kie_facts: "{{ result['json'] }}"
+
+
+      - name: check if new routing is found
+        command: /usr/bin/python3
+        args:
+          stdin: |
+            import re
+            find_solution = False
+
+            for f in {{ kie_facts }}:
+                find_solution = True
+                f['implement'] = 'Execute TroubleShoot'
+                print(f)
+            print(find_solution)
+        register: results
+
+      - name: Failed to find Solution
+        ansible.builtin.fail:
+          msg: "Failed to find Solution"
+        when:  not results.stdout_lines[-1] | bool
+
+      - name: Solution is found and add action to event queue
+        block:
+
+        - set_fact:
+            solution: "{{ results.stdout_lines[0] }}"
+
+        - debug:
+            msg: "{{ solution }}"
+
+
+        - name: Send event to Kafka topic to trigger troubleshooting
+          ansible.builtin.include_tasks: sub_tasks/memory-task.yaml
+
+        when:  results.stdout_lines[-1] | bool
+
+    when: "inventory_hostname == 'localhost'"

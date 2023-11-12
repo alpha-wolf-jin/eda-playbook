@@ -13,7 +13,7 @@
   block:
      - name: use the initial knowledge map on local host
        shell: |
-         grep "^[A-Z,a-z]" {{ init_knowledge_map_dir }}/{{ source_files[0] | basename }} > {{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}
+         grep "^[A-Z,a-z]" {{ init_knowledge_map_dir }}/Memory_Knowledge_Map > {{ init_knowledge_map_dir }}/memory_link_data_file
        when: "inventory_hostname == 'localhost'"
      
      - name: use the initial knowledge map on local host

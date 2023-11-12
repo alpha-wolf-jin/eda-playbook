@@ -1,0 +1,114 @@
+---
+- name: Configure New Routing
+  hosts: all
+  gather_facts: false
+  vars:
+    tasks_results:
+
+      'Antivirus_Scan_Issue': 1
+      'SQL_Memory_Issue': 1
+      'OS_Memory_Issue': 1
+      'Network_GateWay_Issue': 0
+      'Web_Pool_Issue': 0
+      'Log_Ticket': 0
+      'Stop_Delay_Scan': 0
+      'Clean_DB_Memory_Heap': 0
+      'Flush_OS_Cache_Memory': 0
+      'Fix_Default_Gateway': 0
+      'Fix_WebApp_connection_Pools': 0
+
+    excuted_tasks: []
+
+    source_files: 
+      - '/root/ansi/files/App_Slow_Knowledge_Map'
+      - '/root/ansi/files/link_data_file'
+
+    init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+
+  tasks:
+
+  - name: Cannot find solution based on existing knowledge map
+    block:
+    - name: Need human investigation
+      debug:
+        msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+
+    - name: update knowledge map when failing to solution
+      include_tasks: Update_knowledge_map_at_end.yaml
+
+    - meta: end_play
+
+    when: "'999' in  task_list['record']"
+
+  - name: info about new routing
+    debug:
+      msg: "{{ task_list }}"
+  
+  - name: Prepare the knowledge map on localhost
+    include_tasks: fetch-knowledge-map.yaml
+    vars:
+      map_init: false
+
+  - set_fact:
+      ansible_connection: local
+
+  - name: tasks on localhost
+    block:
+       - name: Cannot find solution based on existing knowledge map
+         block:
+         - name: Need human investigation
+           debug:
+             msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
+
+         - meta: end_play
+
+         when: "'999' in  task_list['record']"
+
+       - name: create readablbe solution
+         command: /usr/bin/python3
+         args:
+           stdin: |
+             import re
+             total_succ = 0
+             print("Recommended TroubleShooting Path:")
+             for t in {{ task_list['record'].split('==>') }}:
+                 task_name = t.split('-')[0]
+                 if task_name == 'start':
+                   continue
+                 rc = t.split('-')[1]
+                 next_t = t.split('-')[2].split(':')[0]
+                 weight = t.split('-')[2].split(':')[1].strip()
+                 succ = int(weight)
+                 total_succ += succ
+                 if next_t == 'end':
+                   print("If task " + task_name + " with return code " + rc + ", troubleshooting will be ended here. Weight: " + weight + "/10.")
+                 else:
+                   print("If task " + task_name + " with return code " + rc + ", next task is " + next_t + ". Weight: " + weight + "/10.")
+             print("The recommendation path current weight is " + str(total_succ))
+             print("---------------------------------")
+             print("Actual Execution TroubleShooting Path:")
+         register: recommended_solution
+
+       - name: TroubleShoot Path
+         set_fact:
+           excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
+
+             #  debug: var=recommended_solution['stdout_lines']
+
+    when: "inventory_hostname == 'localhost'"
+
+  - set_fact:
+      ansible_connection: ssh
+
+  - name: execute Single Tasks
+    include_tasks: "task.yaml"
+    loop: "{{ task_list['record'].split('==>')[1:] }}"
+    loop_control:
+      loop_var: task
+
+  - name: Successful TroubleShoot Path
+    debug: var=excuted_tasks
+
+  - name: update knowledge map when finding solution
+    include_tasks: Update_knowledge_map_at_end.yaml
+
