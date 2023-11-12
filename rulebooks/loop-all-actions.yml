@@ -28,4 +28,6 @@
     loop_counter: 5
 
   tasks:
-    - include_tasks: loop-mem-execute-recommendation.yaml
+    - debug:
+        msg: 'test'
+#    - include_tasks: loop-mem-execute-recommendation.yaml
