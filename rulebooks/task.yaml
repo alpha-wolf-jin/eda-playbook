@@ -42,4 +42,4 @@
 
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'
-
+  - task_name not in sub_workflow_with_rule_base
