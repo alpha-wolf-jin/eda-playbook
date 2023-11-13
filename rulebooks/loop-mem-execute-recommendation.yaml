@@ -14,7 +14,8 @@
   when: not find_solution | bool
 
 - name: Test task list
-  debug: var=rule_base_task_list
+  debug: 
+    msg: "{{ hostvars['localhost']['ansible_facts'] }}"
 
 - include_tasks: mem-execute-recommendation.yaml
   when: find_solution | bool
