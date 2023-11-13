@@ -29,8 +29,6 @@
       - set_fact:
           task_result: "{{  tasks_results[rb_task_name] }}"  
       
-      - fail:
-
       - set_fact:
           task_status: "Task: {{ rb_task_name }} --- Expected Return Code: {{ rb_task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
   
