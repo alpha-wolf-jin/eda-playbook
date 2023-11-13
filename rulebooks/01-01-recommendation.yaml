@@ -1,16 +1,12 @@
 ---
-
 - name: Prepare the knowledge map on localhost
-  include_tasks: fetch-knowledge-map.yaml
+  include_tasks: 00-01-fetch-knowledge-map.yaml
         
-
-- name: Default "find Solution"
-  set_fact:
-    find_solution: True
-
 - name: Delegate to localhost and call Rule-base for solution
   block:
-        
+    #- set_fact:
+    #    ansible_connection: local
+
     - name: Retrieve data from work knowledge map file
       set_fact:
         raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}').split('\n') }}"
@@ -23,15 +19,12 @@
       loop_control:
         loop_var: line
     
- 
-    #- set_fact:
-    #    ansible_connection: local
-
+    
     - name: Generate body data for KIE call
       ansible.builtin.template:
         src: templates/input.j2
         dest: "{{ init_knowledge_map_dir }}/input.json"
-
+    
     - name: Call KIE for rcommended solution
       ansible.builtin.uri:
         url: "{{ rule_base_url }}"
@@ -69,23 +62,23 @@
     # when knowledge is poorly definded,
     # no sulution can be recommended.
     - name: Failed to find Solution
-      debug:
+      fail:
         msg: "Failed to find Solution"
-      when:  not results.stdout_lines[-1] | bool
-
-    - name: Failed to find Solution
-      set_fact:
-        find_solution: False
       when:  not results.stdout_lines[-1] | bool
 
     - name: Solution is found and add action to event queue
       block:
 
       - set_fact:
-          rule_base_task_list: "{{ results.stdout_lines[0] }}"
-          #solution: "{{ results.stdout_lines[0] }}"
+          solution: "{{ results.stdout_lines[0] }}"
 
       - debug:
-          msg: "{{ rule_base_task_list }}"
+          msg: "{{ solution }}"
+
+      - name: Send event to Kafka topic to trigger troubleshooting
+        ansible.builtin.shell: |
+          set timeout 300
+          echo "{{ solution }}" | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
+      when:  results.stdout_lines[-1] | bool
 
   when: "inventory_hostname == 'localhost'"

@@ -1,0 +1,97 @@
+---
+
+# Handle the single task from the recommendation
+
+#- debug: var=task
+
+# Once the task was executed before (weight is zero)
+# Update the varialbe excuted_tasks as skip task 
+- name: update execution history for skip task
+  set_fact:
+    excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
+  when: task.strip().split('-')[2].split(':')[1] == '0'
+
+#- debug: var=excuted_tasks
+#  when: task.strip().split('-')[2].split(':')[1] == '0'
+
+- name: Extract task name
+  set_fact:
+    task_name: "{{  task.strip().split('-')[0] }}"
+
+- debug:
+    msg: "{{ task_name }}"
+  when: 
+  - task_name not in sub_workflow_with_rule_base
+
+- name: Execute new task with standard workflow
+  block:
+    - set_fact:
+        task_result: "{{  tasks_results[task_name] }}"  
+    
+    - set_fact:
+        task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
+    
+     #- debug: var=task_status
+    
+    - name: update execution history
+      set_fact:
+        excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+    
+    #- debug: var=task_status
+    
+    - name: when task result is expected
+      include_tasks: 00-04-task-not-as-expected.yaml
+    
+    - name: when task result is not expected
+      include_tasks: 00-05-task-as-expected.yaml
+
+  when: 
+  - task.strip().split('-')[2].split(':')[1] != '0'
+  - task_name not in sub_workflow_with_rule_base
+
+
+- name: Execute new task with Rule-base workflow
+  block:
+    - name: start the workflow given by rule base
+      include_tasks: 02-03-loop-mem-execute-recommendation.yaml
+      vars:
+        source_files:
+          - '/root/ansi/files/Memory_Knowledge_Map'
+          - '/root/ansi/files/memory_link_data_file'
+        init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+        tasks_results:
+          'SQL_Memory_Issue': 0
+          'OS_Memory_Issue': 1
+          'Log_Ticket': 0
+          'Clean_DB_Memory_Heap': 0
+          'Flush_OS_Cache_Memory': 0
+        excuted_tasks: []
+        loop_counter: 5
+        start: start
+        end: end
+        rule_base_url: 'http://192.168.122.51:8080/path'
+
+
+      #import_palybook: loop-all-actions.yml
+
+    - set_fact:
+        task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
+    
+     #- debug: var=task_status
+    
+    - name: update execution history
+      set_fact:
+        excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+    
+    #- debug: var=task_status
+    
+    - name: when task result is expected
+      include_tasks: 00-04-task-not-as-expected.yaml
+    
+    - name: when task result is not expected
+      include_tasks: 00-05-task-as-expected.yaml
+
+  when: 
+  - task.strip().split('-')[2].split(':')[1] != '0'
+  - task_name in sub_workflow_with_rule_base
+

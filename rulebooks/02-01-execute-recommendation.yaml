@@ -3,7 +3,7 @@
 # All recommendations do not work for current issue
 # The rule base recommends un-worked solution we tried before.
 - name: Cannot find solution based on existing knowledge map
-  include_tasks: no-solution.yaml
+  include_tasks: 00-02-no-solution.yaml
 
 - name: info about new solution
   debug:
@@ -11,7 +11,7 @@
 
 # copy the latest knowledge map into the container
 - name: Prepare the knowledge map on localhost
-  include_tasks: fetch-knowledge-map.yaml
+  include_tasks: 00-01-fetch-knowledge-map.yaml
   vars:
     map_init: false
 
@@ -25,7 +25,7 @@
      
      # double check to ensure this soluiotn is not solution we tried before 
      - name: Cannot find solution based on existing knowledge map
-       include_tasks: no-solution.yaml
+       include_tasks: 00-02-no-solution.yaml
 
      # Generate readable recommendation plan
      - name: create readablbe solution
@@ -71,7 +71,7 @@
 # Any task failur will cause the play end
 # If the loop is end wihout failire, it means the recommendation works
 - name: execute recommendation task by task 
-  include_tasks: "task.yaml"
+  include_tasks: "02-02-task.yaml"
   loop: "{{ task_list['record'].split('==>')[1:] }}"
   loop_control:
     loop_var: task
@@ -83,5 +83,5 @@
 
 # update the work map
 - name: update knowledge map when finding solution
-  include_tasks: Update_knowledge_map_at_end.yaml
+  include_tasks: 00-03-Update_knowledge_map_at_end.yaml
 

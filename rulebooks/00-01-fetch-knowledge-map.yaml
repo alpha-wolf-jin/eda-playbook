@@ -1,0 +1,45 @@
+---
+# Manage the knowledge map file 
+# 1. copy the knowledge map files to the container
+# 2. Create the work map file from initial map file. The work map file will be updated during the execution.
+
+# Copy the original map file and work map file to the container
+- name: Store file into /tmp/192.168.122.51/{{ home_dir }}
+  ansible.builtin.fetch:
+    src: "{{ item }}"
+    dest: /tmp
+  loop: "{{ source_files }}"
+  when: "inventory_hostname == '192.168.122.51'"
+  register: result
+
+- debug: var=result
+
+- name: for Rule base workflow first time get knowledeg ma
+  set_fact:
+    map_init: True
+  when: 
+  - counter is defined
+  - counter | int == 0
+
+# If needed, copy the original map file to work map file
+# on both file server and container
+- name: tasks on localhost
+  block:
+     #- set_fact:
+     #    ansible_connection: local
+
+     - name: use the initial knowledge map on local host
+       shell: |
+         grep "^[A-Z,a-z]" {{ init_knowledge_map_dir }}/{{ source_files[0] | basename }} > {{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}
+       when: "inventory_hostname == 'localhost'"
+     
+     #- set_fact:
+     #    ansible_connection: ssh 
+
+     - name: use the initial knowledge map on local host
+       shell: |
+         grep "^[A-Z,a-z]" {{ source_files[0] }} > {{ source_files[1] }}
+       when: "inventory_hostname == '192.168.122.51'"
+  when:  
+    - map_init is defined
+    - map_init | bool

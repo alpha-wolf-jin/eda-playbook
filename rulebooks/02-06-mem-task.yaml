@@ -41,10 +41,10 @@
       - debug: var=task_status
   
       - name: when task result is expected
-        include_tasks: task-as-expected.yaml
+        include_tasks: 00-05-task-as-expected.yaml
    
       - name: when task result is not expected
-        include_tasks: task-as-expected.yaml
+        include_tasks: 00-04-task-not-as-expected.yaml
 
       - name: when task result is not expected
         block:
