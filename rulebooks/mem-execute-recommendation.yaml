@@ -18,11 +18,11 @@
     set_fact:
       find_solution: False
 
-  when: "'999' in  task_list['record']"
+  when: "'999' in  rule_base_task_list['record']"
 
 - name: info about new solution
   debug:
-    msg: "{{ task_list }}"
+    msg: "{{ rule_base_task_list }}"
 
 # copy the latest knowledge map into the container
 - name: Prepare the knowledge map on localhost
@@ -49,7 +49,7 @@
         set_fact:
           find_solution: False
 
-      when: "'999' in  task_list['record']"
+      when: "'999' in  rule_base_task_list['record']"
 
     - name: There is new solution
       block:
@@ -61,7 +61,7 @@
             import re
             total_succ = 0
             print("Recommended TroubleShooting Path:")
-            for t in {{ task_list['record'].split('==>') }}:
+            for t in {{ rule_base_task_list['record'].split('==>') }}:
                 task_name = t.split('-')[0]
                 if task_name == 'start':
                   continue
@@ -84,7 +84,7 @@
         set_fact:
           excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
 
-      when: "'999' not in task_list['record']"
+      when: "'999' not in rule_base_task_list['record']"
 
   when: "inventory_hostname == 'localhost'"
 
@@ -102,7 +102,7 @@
     # If the loop is end wihout failire, it means the recommendation works
     - name: execute recommendation task by task 
       include_tasks: "mem-task.yaml"
-      loop: "{{ task_list['record'].split('==>')[1:] }}"
+      loop: "{{ rule_base_task_list['record'].split('==>')[1:] }}"
       loop_control:
         loop_var: task
     
@@ -121,4 +121,4 @@
         set_fact:
           success: True
       when: continue_task | bool
-  when: "'999' not in  task_list['record']"
+  when: "'999' not in  rule_base_task_list['record']"
