@@ -13,6 +13,9 @@
     task_result: 1
   when: not find_solution | bool
 
+- name: Test task list
+  debug: var=rule_base_task_list
+
 - include_tasks: mem-execute-recommendation.yaml
   when: find_solution | bool
 
