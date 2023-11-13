@@ -18,6 +18,11 @@
   set_fact:
     task_name: "{{  task.strip().split('-')[0] }}"
 
+- debug:
+    msg: "{{ task_name }}"
+  when: 
+  - task_name not in sub_workflow_with_rule_base
+
 - name: Execute new task with standard workflow
   block:
     - set_fact:
