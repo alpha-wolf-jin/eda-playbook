@@ -17,7 +17,9 @@
 - name: for Rule base workflow first time get knowledeg ma
   set_fact:
     map_init: True
-  when: counter | int == 0
+  when: 
+  - counter is defined
+  - counter | int == 0
 
 # If needed, copy the original map file to work map file
 # on both file server and container
