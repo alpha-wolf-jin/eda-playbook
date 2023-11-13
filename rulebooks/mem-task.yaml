@@ -5,34 +5,34 @@
 - name: block with condition that no task fails
   block:
 
-  - debug: var=task
+  - debug: var=rb_task
   
   # Once the task was executed before (weight is zero)
   # Update the varialbe excuted_tasks as skip task 
   - name: update execution history
     set_fact:
-      excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
-    when: task.strip().split('-')[2].split(':')[1] == '0'
+      excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  rb_task.strip().split('-')[0]  ] }}"
+    when: rb_task.strip().split('-')[2].split(':')[1] == '0'
   
   - debug: var=excuted_tasks
-    when: task.strip().split('-')[2].split(':')[1] == '0'
+    when: rb_task.strip().split('-')[2].split(':')[1] == '0'
   
   
   - name: Execute new task 
     block:
       - set_fact:
-          task_name: "{{  task.strip().split('-')[0] }}"
+          rb_task_name: "{{  rb_task.strip().split('-')[0] }}"
     
       - debug:
-          msg: "{{ task_name }} --- {{  tasks_results[task_name] }}"
+          msg: "{{ rb_task_name }} --- {{  tasks_results[rb_task_name] }}"
 
       - set_fact:
-          task_result: "{{  tasks_results[task_name] }}"  
+          task_result: "{{  tasks_results[rb_task_name] }}"  
       
       - fail:
 
       - set_fact:
-          task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
+          task_status: "Task: {{ rb_task_name }} --- Expected Return Code: {{ rb_task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
   
       - debug: var=task_status
   
@@ -53,7 +53,7 @@
   
           - name: update execution history
             set_fact:
-              excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  task.strip().split('-')[0]  ] }}"
+              excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  rb_task.strip().split('-')[0]  ] }}"
   
           - name: Failed on current  TroubleShoot Path
             debug: var=excuted_tasks
@@ -65,7 +65,7 @@
             ansible.builtin.replace:
               path: "{{ source_files[1] }}"
               #path: "{{ init_knowledge_map_dir}}/link_data_file"
-              regexp: "^({{ task.strip().split('-')[0] }},{{ task.strip().split('-')[1] }}),(.+),(.+)$"
+              regexp: "^({{ rb_task.strip().split('-')[0] }},{{ rb_task.strip().split('-')[1] }}),(.+),(.+)$"
               replace: '\1,\2,999'
             register: result
             when: "inventory_hostname == '192.168.122.51'"
@@ -76,7 +76,7 @@
           - name: Update the network map file for matching item in map file
             ansible.builtin.replace:
               path: "{{ source_files[1] }}"
-              regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
+              regexp: "^({{ rb_task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
               replace: '\1,\2,0'
             register: result
             when: "inventory_hostname == '192.168.122.51'"
@@ -90,8 +90,8 @@
             set_fact:
               continue_task: False
       
-        when: task.strip().split('-')[1] != task_result
+        when: rb_task.strip().split('-')[1] != task_result
     
-    when: task.strip().split('-')[2].split(':')[1] != '0'
+    when: rb_task.strip().split('-')[2].split(':')[1] != '0'
 
   when: continue_task | bool

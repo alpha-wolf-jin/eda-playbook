@@ -114,7 +114,7 @@
           'Flush_OS_Cache_Memory': 0
       loop: "{{ rule_base_task_list['record'].split('==>')[1:] }}"
       loop_control:
-        loop_var: task
+        loop_var: rb_task
     
     - name: continue when all tasks completed as expected
       block:
