@@ -14,7 +14,7 @@
   when: not find_solution | bool
 
 - debug: 
-    msg: "{{ hostvars }}"
+    msg: "{{ hostvars['localhost']['rule_base_task_list'] }}"
 
 - name: Test task list
   set_fact: 
