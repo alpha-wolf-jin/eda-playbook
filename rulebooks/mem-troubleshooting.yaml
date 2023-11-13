@@ -82,10 +82,11 @@
       block:
 
       - set_fact:
-          solution: "{{ results.stdout_lines[0] }}"
+          task_list: "{{ results.stdout_lines[0] }}"
+          #solution: "{{ results.stdout_lines[0] }}"
 
       - debug:
-          msg: "{{ solution }}"
+          msg: "{{ task_list }}"
 
     - set_fact:
         ansible_connection: ssh
