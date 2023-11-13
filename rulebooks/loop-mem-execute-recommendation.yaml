@@ -14,7 +14,7 @@
   when: not find_solution | bool
 
 - debug: 
-    msg: "{{ hostvars['localhost']['ansible_facts'] }}"
+    msg: "{{ hostvars }}"
 
 - name: Test task list
   set_fact: 

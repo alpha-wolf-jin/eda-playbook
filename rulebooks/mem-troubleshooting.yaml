@@ -88,7 +88,4 @@
       - debug:
           msg: "{{ rule_base_task_list }}"
 
-    - set_fact:
-        ansible_connection: ssh
-
   when: "inventory_hostname == 'localhost'"
