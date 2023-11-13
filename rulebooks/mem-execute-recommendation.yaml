@@ -30,11 +30,14 @@
   vars:
     map_init: false
 
-- set_fact:
-    ansible_connection: local
+#- set_fact:
+#    ansible_connection: local
 
 - name: tasks on localhost
   block:
+    #- set_fact:
+    #    ansible_connection: local
+    
     # double check to ensure this soluiotn is not solution we tried before 
     - name: Cannot find solution based on existing knowledge map
       block:
@@ -102,6 +105,13 @@
     # If the loop is end wihout failire, it means the recommendation works
     - name: execute recommendation task by task 
       include_tasks: "mem-task.yaml"
+      vars:
+        tasks_results:
+          'SQL_Memory_Issue': 1
+          'OS_Memory_Issue': 1
+          'Log_Ticket': 0
+          'Clean_DB_Memory_Heap': 0
+          'Flush_OS_Cache_Memory': 0
       loop: "{{ rule_base_task_list['record'].split('==>')[1:] }}"
       loop_control:
         loop_var: task

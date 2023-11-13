@@ -25,16 +25,16 @@
 # on both file server and container
 - name: tasks on localhost
   block:
-     - set_fact:
-         ansible_connection: local
+     #- set_fact:
+     #    ansible_connection: local
 
      - name: use the initial knowledge map on local host
        shell: |
          grep "^[A-Z,a-z]" {{ init_knowledge_map_dir }}/{{ source_files[0] | basename }} > {{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}
        when: "inventory_hostname == 'localhost'"
      
-     - set_fact:
-         ansible_connection: ssh 
+     #- set_fact:
+     #    ansible_connection: ssh 
 
      - name: use the initial knowledge map on local host
        shell: |
