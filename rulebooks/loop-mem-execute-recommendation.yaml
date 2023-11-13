@@ -13,6 +13,9 @@
     task_result: 1
   when: not find_solution | bool
 
+- debug: 
+    msg: "{{ hostvars['localhost']['ansible_facts'] }}"
+
 - name: Test task list
   set_fact: 
     rule_base_task_list: "{{ hostvars['localhost']['ansible_facts']['rule_base_task_list'] }}"
