@@ -24,8 +24,8 @@
         loop_var: line
     
  
-    - set_fact:
-        ansible_connection: local
+    #- set_fact:
+    #    ansible_connection: local
 
     - name: Generate body data for KIE call
       ansible.builtin.template:

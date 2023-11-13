@@ -33,8 +33,8 @@
       register: result
       when: "inventory_hostname == '192.168.122.51'"
 
-    - set_fact:
-        ansible_connection: local
+    #- set_fact:
+    #    ansible_connection: local
 
     # Current recommendation cannot work since this task failed
     # Need the next solution
@@ -44,8 +44,8 @@
         echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
       when: "inventory_hostname == 'localhost'"
 
-    - set_fact:
-        ansible_connection: ssh
+    #- set_fact:
+    #    ansible_connection: ssh
 
     # Since Current recommendation cannot work. Let the entire excution end
     - meta: end_play

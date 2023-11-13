@@ -20,8 +20,9 @@
 
 - name: tasks on localhost
   block:
-     - set_fact:
-         ansible_connection: local
+     #- set_fact:
+     #    ansible_connection: local
+     
      # double check to ensure this soluiotn is not solution we tried before 
      - name: Cannot find solution based on existing knowledge map
        include_tasks: no-solution.yaml

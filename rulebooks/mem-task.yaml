@@ -80,8 +80,8 @@
             when: "inventory_hostname == '192.168.122.51'"
   
   
-          - set_fact:
-              ansible_connection: ssh
+          #- set_fact:
+          #    ansible_connection: ssh
   
           # Since Current recommendation cannot work. Let the entire excution end
           - name: mark there is the failure of task
