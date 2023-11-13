@@ -53,7 +53,7 @@
 - name: Execute new task with Rule-base workflow
   block:
     - name: start the workflow given by rule base
-      include_tasks: 02-03-loop-mem-execute-recommendation.yaml
+      include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
       vars:
         source_files:
           - '/root/ansi/files/Memory_Knowledge_Map'

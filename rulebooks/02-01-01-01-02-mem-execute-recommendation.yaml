@@ -104,7 +104,7 @@
     # Any task failur will cause the play end
     # If the loop is end wihout failire, it means the recommendation works
     - name: execute recommendation task by task 
-      include_tasks: "02-06-mem-task.yaml"
+      include_tasks: 02-01-01-01-02-01-mem-task.yaml
       loop: "{{ rule_base_task_list['record'].split('==>')[1:] }}"
       loop_control:
         loop_var: rb_task

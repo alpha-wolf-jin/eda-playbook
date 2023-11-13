@@ -6,7 +6,7 @@
 - debug:
     msg: "{{ counter | int }}"
 
-- include_tasks: 02-04-mem-troubleshooting.yaml
+- include_tasks: 02-01-01-01-01-mem-troubleshooting.yaml
 
 - name: set task result as 1 (failure)
   set_fact:
@@ -17,10 +17,10 @@
   set_fact: 
     rule_base_task_list: "{{ hostvars['localhost']['rule_base_task_list'] }}"
 
-- include_tasks: 02-05-mem-execute-recommendation.yaml
+- include_tasks: 02-01-01-01-02-mem-execute-recommendation.yaml
   when: find_solution | bool
 
-- include_tasks: 02-03-loop-mem-execute-recommendation.yaml
+- include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
   when: 
   - counter | int < loop_counter | int
   - success is not defined

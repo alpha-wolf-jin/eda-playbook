@@ -1,0 +1,20 @@
+- name: troubleshoot
+  hosts: all
+  gather_facts: false
+
+
+  vars:
+    rule_base_url: 'http://192.168.122.51:8080/path'
+
+    start: start
+    end: end
+    start_result: 2
+
+    source_files:
+      - '/root/ansi/files/App_Slow_Knowledge_Map'
+      - '/root/ansi/files/link_data_file'
+
+    init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+
+  tasks:
+  - include_tasks: 01-01-recommendation.yaml
