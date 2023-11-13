@@ -23,9 +23,14 @@
       - set_fact:
           task_name: "{{  task.strip().split('-')[0] }}"
     
+      - debug:
+          msg: "{{ task_name }} --- {{  tasks_results[task_name] }}"
+
       - set_fact:
           task_result: "{{  tasks_results[task_name] }}"  
       
+      - fail:
+
       - set_fact:
           task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
   

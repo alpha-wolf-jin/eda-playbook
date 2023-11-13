@@ -91,8 +91,8 @@
 
   when: "inventory_hostname == 'localhost'"
 
-- set_fact:
-    ansible_connection: ssh
+#- set_fact:
+#    ansible_connection: ssh
 
 - name: Apply new solution
   block:
