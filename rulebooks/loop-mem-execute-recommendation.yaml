@@ -20,7 +20,7 @@
 - include_tasks: mem-execute-recommendation.yaml
   when: find_solution | bool
 
-- include_tasks: loop_mem-execute-recommendation.yaml
+- include_tasks: loop-mem-execute-recommendation.yaml
   when: 
   - counter | int < loop_counter | int
   - success is not defined
