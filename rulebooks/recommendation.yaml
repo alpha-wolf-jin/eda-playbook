@@ -4,7 +4,9 @@
         
 - name: Delegate to localhost and call Rule-base for solution
   block:
-        
+    - set_fact:
+        ansible_connection: local
+
     - name: Retrieve data from work knowledge map file
       set_fact:
         raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}').split('\n') }}"
