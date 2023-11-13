@@ -60,7 +60,7 @@
           - '/root/ansi/files/memory_link_data_file'
         init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
         tasks_results:
-          'SQL_Memory_Issue': 1
+          'SQL_Memory_Issue': 0
           'OS_Memory_Issue': 1
           'Log_Ticket': 0
           'Clean_DB_Memory_Heap': 0
