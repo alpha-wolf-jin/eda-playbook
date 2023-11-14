@@ -48,58 +48,20 @@
         include_tasks: 00-05-task-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
+        when: rb_task.strip().split('-')[1] == task_result
 
    
       - name: when task result is not expected
         include_tasks: 00-04-task-not-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
+        when: rb_task.strip().split('-')[1] != task_result
 
-      - name: when task result is not expected
-        block:
   
-          - name: update execution history
-            set_fact:
-              excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  rb_task.strip().split('-')[0]  ] }}"
-  
-          - name: Failed on current  TroubleShoot Path
-            debug: var=excuted_tasks
-      
-          - name: rb task
-            debug: var=rb_task
-
-          # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
-          # when the executed task return is not expected,
-          # update the related task weight as 999 on the file server
-          - name: Update the network map file - when result is not expected
-            ansible.builtin.replace:
-              path: "{{ source_files[1] }}"
-              #path: "{{ init_knowledge_map_dir}}/link_data_file"
-              regexp: "^({{ rb_task.strip().split('-')[0] }},{{ rb_task.strip().split('-')[1] }}),(.+),(.+)$"
-              replace: '\1,\2,999'
-            register: result
-            when: "inventory_hostname == '192.168.122.51'"
-      
-          # This is for the scenario which return is either 0 or 1
-          # When the other return code is with weight 999
-          # this return code should be with weight 0
-          - name: Update the network map file for matching item in map file
-            ansible.builtin.replace:
-              path: "{{ source_files[1] }}"
-              regexp: "^({{ rb_task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
-              replace: '\1,\2,0'
-            register: result
-            when: "inventory_hostname == '192.168.122.51'"
-  
-  
-          #- set_fact:
-          #    ansible_connection: ssh
-  
-          # Since Current recommendation cannot work. Let the entire excution end
-          - name: mark there is the failure of task
-            set_fact:
-              continue_task: False
-      
+      # Since Current recommendation cannot work. Let the entire excution end
+      - name: mark there is the failure of task
+        set_fact:
+          continue_task: False
         when: rb_task.strip().split('-')[1] != task_result
     
     when: rb_task.strip().split('-')[2].split(':')[1] != '0'
