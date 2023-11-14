@@ -65,7 +65,6 @@
           'Log_Ticket': 0
           'Clean_DB_Memory_Heap': 0
           'Flush_OS_Cache_Memory': 0
-        excuted_tasks: []
         loop_counter: 5
         start: start
         end: end
