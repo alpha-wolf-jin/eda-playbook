@@ -26,3 +26,16 @@
   - counter | int < loop_counter | int
   - success is not defined
   - find_solution | bool
+
+- name: set entire Memory_issue task successful
+  set_fact:
+    task_result: 0
+  when:
+  - success is defined
+  - success | bool
+
+- name: set entire Memory_issue task successful
+  set_fact:
+    task_result: 1
+  when:  success is not defined or not success | bool
+
