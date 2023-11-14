@@ -51,6 +51,10 @@
       - name: No New Solution
         set_fact:
           find_solution: False
+      #####################################################
+      ## Need to sent Memory_Issue task weight as 999
+      # change me
+      # ####################################
 
       when: "'999' in  rule_base_task_list['record']"
 
@@ -125,3 +129,8 @@
           success: True
       when: continue_task | bool
   when: "'999' not in  rule_base_task_list['record']"
+
+- name: set entire Memory_issue task successful
+  set_fact:
+    task_result: 0
+  when: success | bool    

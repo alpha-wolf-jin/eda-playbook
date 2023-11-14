@@ -8,10 +8,11 @@
 
 - include_tasks: 02-01-01-01-01-mem-troubleshooting.yaml
 
+# Set task default is failed. Let is corrected once it is succeeful in 02-01-01-01-02-mem-execute-recommendation.yaml 
 - name: set task result as 1 (failure)
   set_fact:
     task_result: 1
-  when: not find_solution | bool
+#  when: not find_solution | bool
 
 - name: Test task list
   set_fact: 
