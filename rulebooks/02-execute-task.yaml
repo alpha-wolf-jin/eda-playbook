@@ -17,7 +17,6 @@
       'Fix_Default_Gateway': 0
       'Fix_WebApp_connection_Pools': 0
 
-    excuted_tasks: []
 
     source_files: 
       - '/root/ansi/files/App_Slow_Knowledge_Map'
@@ -29,4 +28,8 @@
     - Memory_Issue
 
   tasks:
+
+  - set_fact:
+      excuted_tasks: []
+
   - include_tasks: 02-01-execute-recommendation.yaml
