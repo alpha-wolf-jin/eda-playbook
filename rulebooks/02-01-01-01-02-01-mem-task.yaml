@@ -42,9 +42,14 @@
   
       - name: when task result is expected
         include_tasks: 00-05-task-as-expected.yaml
+        vars:
+          task: "{{ rb_task }}"
+
    
       - name: when task result is not expected
         include_tasks: 00-04-task-not-as-expected.yaml
+        vars:
+          task: "{{ rb_task }}"
 
       - name: when task result is not expected
         block:
@@ -56,6 +61,9 @@
           - name: Failed on current  TroubleShoot Path
             debug: var=excuted_tasks
       
+          - name: rb task
+            debug: var=rb_task
+
           # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
           # when the executed task return is not expected,
           # update the related task weight as 999 on the file server
