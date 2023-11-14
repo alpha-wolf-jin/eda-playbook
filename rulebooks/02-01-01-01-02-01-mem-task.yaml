@@ -23,8 +23,8 @@
       - set_fact:
           rb_task_name: "{{  rb_task.strip().split('-')[0] }}"
     
-      - debug:
-          msg: "{{ rb_task_name }} --- {{  tasks_results[rb_task_name] }}"
+      #- debug:
+      #    msg: "{{ rb_task_name }} --- {{  tasks_results[rb_task_name] }}"
 
       - set_fact:
           task_result: "{{  tasks_results[rb_task_name] }}"  
@@ -32,28 +32,28 @@
       - set_fact:
           task_status: "Task: {{ rb_task_name }} --- Expected Return Code: {{ rb_task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
   
-      - debug: var=task_status
-      - debug: var=excuted_tasks
+      #- debug: var=task_status
+      #- debug: var=excuted_tasks
   
       - name: update execution history
         set_fact:
           excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
         register: excuted_tasks_result
 
-      - debug: var=excuted_tasks_result
+      #- debug: var=excuted_tasks_result
   
-      - debug: var=excuted_tasks
+      #- debug: var=excuted_tasks
   
-      #- name: when task result is expected
-      #  include_tasks: 00-05-task-as-expected.yaml
-      #  vars:
-      #    task: "{{ rb_task }}"
+      - name: when task result is expected
+        include_tasks: 00-05-task-as-expected.yaml
+        vars:
+          task: "{{ rb_task }}"
 
    
-      #- name: when task result is not expected
-      #  include_tasks: 00-04-task-not-as-expected.yaml
-      #  vars:
-      #    task: "{{ rb_task }}"
+      - name: when task result is not expected
+        include_tasks: 00-04-task-not-as-expected.yaml
+        vars:
+          task: "{{ rb_task }}"
 
       - name: when task result is not expected
         block:

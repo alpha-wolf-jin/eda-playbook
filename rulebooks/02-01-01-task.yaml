@@ -69,6 +69,7 @@
         start: start
         end: end
         rule_base_url: 'http://192.168.122.51:8080/path'
+        rb_workflow: True
 
 
       #import_palybook: loop-all-actions.yml

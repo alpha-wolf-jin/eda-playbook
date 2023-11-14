@@ -10,6 +10,9 @@
     - name: Failed on current  TroubleShoot Path
       debug: var=excuted_tasks
 
+    - name: source file
+      debug: var=source_files
+
     # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
     # when the executed task return is not expected,
     # update the related task weight as 999 on the file server
@@ -42,13 +45,16 @@
       ansible.builtin.shell: |
         set timeout 300
         echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
-      when: "inventory_hostname == 'localhost'"
+      when: 
+      - "inventory_hostname == 'localhost'"
+      - rb_workflow is not defined or not rb_workflow | bool
 
     #- set_fact:
     #    ansible_connection: ssh
 
     # Since Current recommendation cannot work. Let the entire excution end
     - meta: end_play
+      when: rb_workflow is not defined or not rb_workflow | bool
 
   when: task.strip().split('-')[1] != task_result
 
