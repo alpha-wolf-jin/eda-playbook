@@ -38,7 +38,7 @@
         set_fact:
           excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
   
-      - debug: var=task_status
+      - debug: var=excuted_tasks
   
       - name: when task result is expected
         include_tasks: 00-05-task-as-expected.yaml
