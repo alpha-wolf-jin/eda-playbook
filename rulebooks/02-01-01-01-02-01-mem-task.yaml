@@ -37,6 +37,9 @@
       - name: update execution history
         set_fact:
           excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
+        register: excuted_tasks_result
+
+      - debug: var=excuted_tasks_result
   
       - debug: var=excuted_tasks
   
