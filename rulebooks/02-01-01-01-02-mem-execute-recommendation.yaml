@@ -130,14 +130,3 @@
       when: continue_task | bool
   when: "'999' not in  rule_base_task_list['record']"
 
-- name: set entire Memory_issue task successful
-  set_fact:
-    task_result: 0
-  when: 
-  - success is defined
-  - success | bool    
-
-- name: set entire Memory_issue task successful
-  set_fact:
-    task_result: 1
-  when:  success is not defined or not success | bool
