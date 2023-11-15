@@ -24,11 +24,11 @@
   debug:
     msg: "{{ rule_base_task_list }}"
 
-# copy the latest knowledge map into the container
-- name: Prepare the knowledge map on localhost
-  include_tasks: 00-01-fetch-knowledge-map.yaml
-  vars:
-    map_init: false
+## copy the latest knowledge map into the container
+#- name: Prepare the knowledge map on localhost
+#  include_tasks: 00-01-fetch-knowledge-map.yaml
+#  vars:
+#    map_init: false
 
 #- set_fact:
 #    ansible_connection: local

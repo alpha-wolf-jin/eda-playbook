@@ -14,7 +14,11 @@
 
 - debug: var=result
 
-- name: for Rule base workflow first time get knowledeg ma
+- name: default to use updated the map
+  set_fact:
+    map_init: False
+
+- name: for Rule base workflow first time get knowledeg map
   set_fact:
     map_init: True
   when: 
