@@ -2,34 +2,39 @@
 
 # All recommendations do not work for current issue
 # The rule base recommends un-worked solution we tried before.
-- name: Cannot find solution based on existing knowledge map
+- name: {{ title }} - Cannot find solution based on existing knowledge map
   include_tasks: 00-02-no-solution.yaml
+  vars:
+    title: 00-02-no-solution
 
-- name: info about new solution
+- name: {{ title }} - info about new solution
   debug:
     msg: "{{ task_list }}"
   run_once: true
 
 # copy the latest knowledge map into the container
-- name: Prepare the knowledge map on localhost
+- name: {{ title }} - Prepare the knowledge map on localhost
   include_tasks: 00-01-fetch-knowledge-map.yaml
   vars:
     map_init: false
+    title: 00-01-fetch-knowledge-map
 
 #- set_fact:
 #    ansible_connection: local
 
-- name: tasks on localhost
+- name: {{ title }} - tasks on localhost
   block:
      #- set_fact:
      #    ansible_connection: local
      
      # double check to ensure this soluiotn is not solution we tried before 
-     - name: Cannot find solution based on existing knowledge map
+     - name: {{ title }} - Cannot find solution based on existing knowledge map
        include_tasks: 00-02-no-solution.yaml
+       vars:
+         title: 00-02-no-solution
 
      # Generate readable recommendation plan
-     - name: create readablbe solution
+     - name: {{ title }} - create readablbe solution
        command: /usr/bin/python3
        args:
          stdin: |
@@ -55,14 +60,14 @@
        register: recommended_solution
 
      # Initialize the excuted_tasks with recommende execution plan
-     - name: TroubleShoot Path
+     - name: {{ title }} - TroubleShoot Path
        set_fact:
          excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
 
   when: "inventory_hostname == 'localhost'"
 
 
-- name: info about new solution
+- name: {{ title }} - info about new solution
   debug:
     msg: "{{ task_list['record'].split('==>')[1:] }}"
   run_once: true
@@ -70,18 +75,21 @@
 # Execute the recommende execution plan
 # Any task failur will cause the play end
 # If the loop is end wihout failire, it means the recommendation works
-- name: execute recommendation task by task 
+- name: {{ title }} - execute recommendation task by task 
   include_tasks: 02-01-01-task.yaml
+  vars:
+    02-01-01-task
   loop: "{{ task_list['record'].split('==>')[1:] }}"
   loop_control:
     loop_var: task
 
 # print the recommend plan and actual result
 # when it succeeds.
-- name: Successful TroubleShoot Path
+- name: {{ title }} - Successful TroubleShoot Path
   debug: var=excuted_tasks
 
 # update the work map
-- name: update knowledge map when finding solution
+- name: {{ title }} - update knowledge map when finding solution
   include_tasks: 00-03-Update_knowledge_map_at_end.yaml
-
+  vars:
+    title: 00-03-Update_knowledge_map_at_end

@@ -48,6 +48,7 @@
         include_tasks: 00-05-task-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
+          title: 00-05-task-as-expected
         when: rb_task.strip().split('-')[1] == task_result
 
    
@@ -55,6 +56,7 @@
         include_tasks: 00-04-task-not-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
+          title: 00-04-task-not-as-expected
         when: rb_task.strip().split('-')[1] != task_result
 
   

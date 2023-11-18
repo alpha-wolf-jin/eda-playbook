@@ -5,31 +5,33 @@
 #- debug: var=task
 
 # Once the task was executed before (weight is zero)
+# skip this task
 # Update the varialbe excuted_tasks as skip task 
-- name: update execution history for skip task
+
+- name: {{ title }} - update execution history for skip task
   block:
-    - name: add skip task to variable excuted_tasks list
+    - name: {{ title }} - add skip task to variable excuted_tasks list
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
     
-    - name: show the excuted_tasks list
+    - name: {{ title }} - show the excuted_tasks list
       debug: var=excuted_tasks
 
   when: task.strip().split('-')[2].split(':')[1] == '0'
 
-#- debug: var=excuted_tasks
-#  when: task.strip().split('-')[2].split(':')[1] == '0'
 
-- name: Extract task name
+# The below is task which should be not skipped
+#
+
+- name: {{ title }} - Extract task name
   set_fact:
-    task_name: "{{  task.strip().split('-')[0] }}"
+    task_name: {{ title }} - "{{  task.strip().split('-')[0] }}"
 
-- debug: var=task_name
-#    msg: "{{ task_name }}"
-#  when: 
-#  - task_name not in sub_workflow_with_rule_base
+- name: {{ title }} - show task name 
+  debug: var=task_name
+  run_once: true
 
-- name: Execute new task with standard workflow
+- name: {{ title }} - Execute new task with standard workflow
   block:
     - set_fact:
         task_result: "{{  tasks_results[task_name] }}"  
@@ -39,26 +41,30 @@
     
      #- debug: var=task_status
     
-    - name: update execution history
+    - name: {{ title }} - update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
     
     #- debug: var=task_status
     
-    - name: when task result is expected
+    - name: {{ title }} - when task result is expected
       include_tasks: 00-04-task-not-as-expected.yaml
+      vars:
+        title: 00-04-task-not-as-expected
     
-    - name: when task result is not expected
+    - name: {{ title }} - when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
+      vars:
+        title: 00-05-task-as-expected.yaml
 
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'
   - task_name not in sub_workflow_with_rule_base
 
 
-- name: Execute new task with Rule-base workflow
+- name: {{ title }} - Execute new task with Rule-base workflow
   block:
-    - name: start the workflow given by rule base
+    - name: {{ title }} - start the workflow given by rule base
       include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
       vars:
         source_files:
@@ -76,41 +82,42 @@
         end: end
         rule_base_url: 'http://192.168.122.51:8080/path'
         rb_workflow: True
+        title: 02-01-01-01-loop-mem-execute-recommendation
 
-
-      #import_palybook: loop-all-actions.yml
 
     - set_fact:
         task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
     
      #- debug: var=task_status
     
-    - name: update execution history
+    - name: {{ title }} - update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
     
     #- debug: var=task_status
-    - name: task info  and task_result
+    - name: {{ title }} - task info  and task_result
       debug:
         msg: "{{ task }} -- {{ task_result }}"
 
     
-    - name: when task result is expected
+    - name: {{ title }} - when task result is expected
       include_tasks: 00-04-task-not-as-expected.yaml
       vars:
         source_files:
           - '/root/ansi/files/App_Slow_Knowledge_Map'
           - '/root/ansi/files/link_data_file'
         init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+        title: 00-04-task-not-as-expected
 
     
-    - name: when task result is not expected
+    - name: {{ title }} - when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
       vars:
         source_files:
           - '/root/ansi/files/App_Slow_Knowledge_Map'
           - '/root/ansi/files/link_data_file'
         init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
+        title: 00-05-task-as-expected
 
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'

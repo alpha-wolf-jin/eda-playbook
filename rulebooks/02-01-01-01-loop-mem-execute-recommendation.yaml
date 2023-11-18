@@ -1,40 +1,49 @@
 ---
-- name: Increase counter.
+- name: {{ title }} - Increase counter.
   set_fact:
     counter: "{{ counter | default(-1) | int + 1 }}"
 
-- debug:
-    msg: "{{ counter | int }}"
+- name: {{ title }} - the num of loop
+  debug:
+    msg: "This is the {{ counter | int }}th run loop"
+  run_once: true
 
-- include_tasks: 02-01-01-01-01-mem-troubleshooting.yaml
+- name: {{ title }} - Get the recommeded task list
+  include_tasks: 02-01-01-01-01-mem-troubleshooting.yaml
+  vars:
+    title: 02-01-01-01-01-mem-troubleshooting
 
 # Set task default is failed. Let is corrected once it is succeeful in 02-01-01-01-02-mem-execute-recommendation.yaml 
-- name: set task result as 1 (failure)
+- name: {{ title }} - set task result as 1 (failure)
   set_fact:
     task_result: 1
 #  when: not find_solution | bool
 
-- name: Test task list
+- name: {{ title }} - Test task list
   set_fact: 
     rule_base_task_list: "{{ hostvars['localhost']['rule_base_task_list'] }}"
 
 - include_tasks: 02-01-01-01-02-mem-execute-recommendation.yaml
+  vars:
+    title: 02-01-01-01-02-mem-execute-recommendation
   when: find_solution | bool
 
 - include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
+  vars:
+    title: 02-01-01-01-loop-mem-execute-recommendation
   when: 
   - counter | int < loop_counter | int
   - success is not defined
   - find_solution | bool
 
-#- name: set entire Memory_issue task successful
+#- name: {{ title }} - set entire Memory_issue task successful
 #  set_fact:
 #    task_result: 0
 #  when:
 #  - success is defined
 #  - success | bool
 #
-#- name: set entire Memory_issue task successful
+#- name: {{ title }} - set entire Memory_issue task successful
 #  set_fact:
 #    task_result: 1
 #  when:  success is not defined or not success | bool

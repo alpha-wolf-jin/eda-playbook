@@ -4,7 +4,7 @@
 # 2. Create the work map file from initial map file. The work map file will be updated during the execution.
 
 # Copy the original map file and work map file to the container
-- name: Store file into /tmp/192.168.122.51/{{ home_dir }}
+- name: {{ title }} - Store file into /tmp/192.168.122.51/{{ home_dir }}
   ansible.builtin.fetch:
     src: "{{ item }}"
     dest: /tmp
@@ -14,11 +14,11 @@
 
 #- debug: var=result
 
-- name: default to use updated the map
+- name: {{ title }} - default to use updated the map
   set_fact:
     map_init: False
 
-- name: for Rule base workflow first time get knowledeg map
+- name: {{ title }} - for Rule base workflow first time get knowledeg map
   set_fact:
     map_init: True
   when: 
@@ -27,16 +27,16 @@
 
 # If needed, copy the original map file to work map file
 # on both file server and container
-- name: tasks on localhost
+- name: {{ title }} - tasks on localhost
   block:
 
-     - name: use the initial knowledge map on local host
+     - name: {{ title }} - use the initial knowledge map on local host
        shell: |
          grep "^[A-Z,a-z]" {{ init_knowledge_map_dir }}/{{ source_files[0] | basename }} > {{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}
        when: "inventory_hostname == 'localhost'"
      
 
-     - name: use the initial knowledge map on file server
+     - name: {{ title }} - use the initial knowledge map on file server
        shell: |
          grep "^[A-Z,a-z]" {{ source_files[0] }} > {{ source_files[1] }}
        when: "inventory_hostname == '192.168.122.51'"

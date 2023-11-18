@@ -33,3 +33,5 @@
       excuted_tasks: []
 
   - include_tasks: 02-01-execute-recommendation.yaml
+    vars:
+      title: 02-01-execute-recommendation
