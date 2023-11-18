@@ -11,17 +11,7 @@
       debug: var=excuted_tasks
       when: 
       - "inventory_hostname == 'localhost'"
-      - rb_workflow is not defined or not rb_workflow | bool
-
-    #- set_fact:
-    #    ansible_connection: ssh
-
-    # Since Current recommendation cannot work. Let the entire excution end
-    - meta: end_play
-      when: rb_workflow is not defined or not rb_workflow | bool
-
-  when: task.strip().split('-')[1] != task_result
-
+#      - rb_workflow is not defined or not rb_workflow | bool
 
     - name: source file
       debug: var=source_files
@@ -38,7 +28,7 @@
       register: result
       when: "inventory_hostname == '192.168.122.51'"
 
-    # This is for the scenario which return is either 0 or 1
+    # This is set the task with task_resutl with the weight 0
     # When the other return code is with weight 999
     # this return code should be with weight 0
     - name: Update the network map file for matching item in map file
@@ -53,7 +43,12 @@
     #    ansible_connection: local
 
     # Current recommendation cannot work since this task failed
-    # Need the next solution
+    # Need the next solution and sent event to message queue.
+    # It is suitable for the loose-coupled tasks.
+    # But when the execution workflow is controlled by Rule Base, 
+    # the rule base and execution are under one parent playbook, 
+    # it doesn't need EDA to ordinate them. That makes the varaibles management easier.
+    # It is suitable close-coupled tasks.
     - name: Send event to find next best solution
       ansible.builtin.shell: |
         set timeout 300
