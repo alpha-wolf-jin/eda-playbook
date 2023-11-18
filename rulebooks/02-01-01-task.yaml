@@ -93,6 +93,7 @@
     - name:  task info  and task_result
       debug:
         msg: "{{ task }} -- {{ task_result }}"
+      run_once: true
 
     
     - name:  when task result is expected

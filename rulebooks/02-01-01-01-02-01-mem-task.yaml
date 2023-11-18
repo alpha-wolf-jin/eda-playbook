@@ -6,6 +6,7 @@
   block:
 
   - debug: var=rb_task
+    run_once: true
   
   # Once the task was executed before (weight is zero)
   # Update the varialbe excuted_tasks as skip task 
@@ -15,7 +16,9 @@
     when: rb_task.strip().split('-')[2].split(':')[1] == '0'
   
   - debug: var=excuted_tasks
-    when: rb_task.strip().split('-')[2].split(':')[1] == '0'
+    when:
+    - rb_task.strip().split('-')[2].split(':')[1] == '0'
+    - "inventory_hostname == 'localhost'"
   
   
   - name: Execute new task 

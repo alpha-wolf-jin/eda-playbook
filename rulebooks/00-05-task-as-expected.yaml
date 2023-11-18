@@ -6,7 +6,8 @@
 
   - name: Show current executions
     debug: 
-      msg: " 'Successful at task : ' +  task.strip().split('-')[0]  "
+      msg: " 'Successful at task : '   {{ task.strip().split('-')[0] }} "
+    run_once: true
 
   # when the executed task return is expected,
   # update the related task weight as 0 on the file server
