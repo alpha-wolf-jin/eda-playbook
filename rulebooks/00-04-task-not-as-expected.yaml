@@ -6,6 +6,10 @@
     - name:  update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  task.strip().split('-')[0]  ] }}"
+        
+    - name: Show current executions
+      debug: 
+        msg: " 'Failed at task : ' +  task.strip().split('-')[0]  "
 
     - name:  Failed on current  TroubleShoot Path
       debug: var=excuted_tasks
