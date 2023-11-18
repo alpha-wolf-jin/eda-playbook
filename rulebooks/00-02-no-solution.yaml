@@ -8,8 +8,6 @@
 
   - name:  update knowledge map when failing to solution
     include_tasks: 00-03-Update_knowledge_map_at_end.yaml
-    vars:
-      title: 00-03-Update_knowledge_map_at_end
 
   - meta: end_play
 

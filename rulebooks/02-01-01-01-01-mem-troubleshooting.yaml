@@ -2,10 +2,7 @@
 
 - name:  Prepare the knowledge map on localhost
   include_tasks: 00-01-fetch-knowledge-map.yaml
-  vars:
-    title: 00-01-fetch-knowledge-map
         
-
 - name:  Default "find Solution"
   set_fact:
     find_solution: True

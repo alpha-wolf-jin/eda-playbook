@@ -49,13 +49,9 @@
     
     - name:  when task result is expected
       include_tasks: 00-04-task-not-as-expected.yaml
-      vars:
-        title: 00-04-task-not-as-expected
     
     - name:  when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
-      vars:
-        title: 00-05-task-as-expected.yaml
 
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'
@@ -82,8 +78,6 @@
         end: end
         rule_base_url: 'http://192.168.122.51:8080/path'
         rb_workflow: True
-        title: 02-01-01-01-loop-mem-execute-recommendation
-
 
     - set_fact:
         task_status: "Task: {{ task_name }} --- Expected Return Code: {{ task.strip().split('-')[1] }} --- Actual Return Code: {{ task_result }}"
@@ -107,8 +101,6 @@
           - '/root/ansi/files/App_Slow_Knowledge_Map'
           - '/root/ansi/files/link_data_file'
         init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
-        title: 00-04-task-not-as-expected
-
     
     - name:  when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
@@ -117,7 +109,6 @@
           - '/root/ansi/files/App_Slow_Knowledge_Map'
           - '/root/ansi/files/link_data_file'
         init_knowledge_map_dir: '/tmp/192.168.122.51/root/ansi/files'
-        title: 00-05-task-as-expected
 
   when: 
   - task.strip().split('-')[2].split(':')[1] != '0'

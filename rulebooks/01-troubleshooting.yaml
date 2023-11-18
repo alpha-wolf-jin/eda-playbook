@@ -18,5 +18,3 @@
 
   tasks:
   - include_tasks: 01-01-recommendation.yaml
-    vars:
-       title: 01-01-recommendation

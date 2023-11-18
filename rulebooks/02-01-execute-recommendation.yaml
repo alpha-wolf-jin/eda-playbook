@@ -4,8 +4,6 @@
 # The rule base recommends un-worked solution we tried before.
 - name:  Cannot find solution based on existing knowledge map
   include_tasks: 00-02-no-solution.yaml
-  vars:
-    title: 00-02-no-solution
 
 - name:  info about new solution
   debug:
@@ -17,7 +15,6 @@
   include_tasks: 00-01-fetch-knowledge-map.yaml
   vars:
     map_init: false
-    title: 00-01-fetch-knowledge-map
 
 #- set_fact:
 #    ansible_connection: local
@@ -30,8 +27,6 @@
      # double check to ensure this soluiotn is not solution we tried before 
      - name:  Cannot find solution based on existing knowledge map
        include_tasks: 00-02-no-solution.yaml
-       vars:
-         title: 00-02-no-solution
 
      # Generate readable recommendation plan
      - name:  create readablbe solution
@@ -77,8 +72,6 @@
 # If the loop is end wihout failire, it means the recommendation works
 - name:  execute recommendation task by task 
   include_tasks: 02-01-01-task.yaml
-  vars:
-    02-01-01-task
   loop: "{{ task_list['record'].split('==>')[1:] }}"
   loop_control:
     loop_var: task
@@ -91,5 +84,3 @@
 # update the work map
 - name:  update knowledge map when finding solution
   include_tasks: 00-03-Update_knowledge_map_at_end.yaml
-  vars:
-    title: 00-03-Update_knowledge_map_at_end

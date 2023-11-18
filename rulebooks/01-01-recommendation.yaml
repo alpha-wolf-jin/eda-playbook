@@ -1,8 +1,6 @@
 ---
 - name: Prepare the knowledge map on localhost
   include_tasks: 00-01-fetch-knowledge-map.yaml
-  vars:
-    title: 00-01-fetch-knowledge-map
         
 - name: Delegate to localhost and call Rule-base for solution
   block:

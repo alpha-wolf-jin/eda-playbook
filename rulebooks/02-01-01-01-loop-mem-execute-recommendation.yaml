@@ -10,8 +10,6 @@
 
 - name:  Get the recommeded task list
   include_tasks: 02-01-01-01-01-mem-troubleshooting.yaml
-  vars:
-    title: 02-01-01-01-01-mem-troubleshooting
 
 # Set task default is failed. Let is corrected once it is succeeful in 02-01-01-01-02-mem-execute-recommendation.yaml 
 - name:  set task result as 1 (failure)
@@ -24,13 +22,9 @@
     rule_base_task_list: "{{ hostvars['localhost']['rule_base_task_list'] }}"
 
 - include_tasks: 02-01-01-01-02-mem-execute-recommendation.yaml
-  vars:
-    title: 02-01-01-01-02-mem-execute-recommendation
   when: find_solution | bool
 
 - include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
-  vars:
-    title: 02-01-01-01-loop-mem-execute-recommendation
   when: 
   - counter | int < loop_counter | int
   - success is not defined
