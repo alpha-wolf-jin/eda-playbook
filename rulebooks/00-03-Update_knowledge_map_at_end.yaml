@@ -1,13 +1,13 @@
 ---
 
-- name: [ {{ title }} ]  replace weight 10
+- name:  replace weight 10
   ansible.builtin.replace:
     path: "{{ source_files[1] }}"
     regexp: '0$'
     replace: '1'
   when: "inventory_hostname == '192.168.122.51'"
 
-- name: [ {{ title }} ]  replace weight 999
+- name:  replace weight 999
   ansible.builtin.replace:
     path: "{{ source_files[1] }}"
     regexp: '999$'

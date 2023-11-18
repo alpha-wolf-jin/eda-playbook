@@ -1,12 +1,12 @@
 ---
 
-- name: [ {{ title }} ]  Cannot find solution based on existing knowledge map
+- name:  Cannot find solution based on existing knowledge map
   block:
-  - name: [ {{ title }} ]  Need human investigation
+  - name:  Need human investigation
     debug:
       msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
-  - name: [ {{ title }} ]  update knowledge map when failing to solution
+  - name:  update knowledge map when failing to solution
     include_tasks: 00-03-Update_knowledge_map_at_end.yaml
     vars:
       title: 00-03-Update_knowledge_map_at_end

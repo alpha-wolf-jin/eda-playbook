@@ -2,14 +2,14 @@
 
 # Handle the single task from the recommendation
 
-- name: [ {{ title }} ] block with condition that no task fails
+- name: block with condition that no task fails
   block:
 
   - debug: var=rb_task
   
   # Once the task was executed before (weight is zero)
   # Update the varialbe excuted_tasks as skip task 
-  - name: [ {{ title }} ] update execution history
+  - name: update execution history
     set_fact:
       excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  rb_task.strip().split('-')[0]  ] }}"
     when: rb_task.strip().split('-')[2].split(':')[1] == '0'
@@ -18,10 +18,10 @@
     when: rb_task.strip().split('-')[2].split(':')[1] == '0'
   
   
-  - name: [ {{ title }} ] Execute new task 
+  - name: Execute new task 
     block:
       - set_fact:
-          rb_task_name: [ {{ title }} ] "{{  rb_task.strip().split('-')[0] }}"
+          rb_task_name: "{{  rb_task.strip().split('-')[0] }}"
     
       #- debug:
       #    msg: "{{ rb_task_name }} --- {{  tasks_results[rb_task_name] }}"
@@ -35,7 +35,7 @@
       #- debug: var=task_status
       #- debug: var=excuted_tasks
   
-      - name: [ {{ title }} ] update execution history
+      - name: update execution history
         set_fact:
           excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
         register: excuted_tasks_result
@@ -44,7 +44,7 @@
   
       #- debug: var=excuted_tasks
   
-      - name: [ {{ title }} ] when task result is expected
+      - name: when task result is expected
         include_tasks: 00-05-task-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
@@ -52,7 +52,7 @@
         when: rb_task.strip().split('-')[1] == task_result
 
    
-      - name: [ {{ title }} ] when task result is not expected
+      - name: when task result is not expected
         include_tasks: 00-04-task-not-as-expected.yaml
         vars:
           task: "{{ rb_task }}"
@@ -61,7 +61,7 @@
 
   
       # Since Current recommendation cannot work. Let the entire excution end
-      - name: [ {{ title }} ] mark there is the failure of task
+      - name: mark there is the failure of task
         set_fact:
           continue_task: False
         when: rb_task.strip().split('-')[1] != task_result

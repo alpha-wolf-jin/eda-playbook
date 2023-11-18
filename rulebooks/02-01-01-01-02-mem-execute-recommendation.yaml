@@ -2,13 +2,13 @@
 
 # All recommendations do not work for current issue
 # The rule base recommends un-worked solution we tried before.
-- name: [ {{ title }} ]  Cannot find solution based on existing knowledge map
+- name:  Cannot find solution based on existing knowledge map
   block:
-  - name: [ {{ title }} ]  Need human investigation
+  - name:  Need human investigation
     debug:
       msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
-  - name: [ {{ title }} ]  update knowledge map when failing to solution
+  - name:  update knowledge map when failing to solution
     include_tasks: 00-03-Update_knowledge_map_at_end.yaml
     vars:
       title: 00-03-Update_knowledge_map_at_end
@@ -16,18 +16,18 @@
   # task exit point 01
   #- meta: end_play
 
-  - name: [ {{ title }} ]  No New Solution
+  - name:  No New Solution
     set_fact:
       find_solution: False
 
   when: "'999' in  rule_base_task_list['record']"
 
-- name: [ {{ title }} ]  info about new solution
+- name:  info about new solution
   debug:
     msg: "{{ rule_base_task_list }}"
 
 ## copy the latest knowledge map into the container
-#- name: [ {{ title }} ]  Prepare the knowledge map on localhost
+#- name:  Prepare the knowledge map on localhost
 #  include_tasks: 00-01-fetch-knowledge-map.yaml
 #  vars:
 #    map_init: false
@@ -35,22 +35,22 @@
 #- set_fact:
 #    ansible_connection: local
 
-- name: [ {{ title }} ]  tasks on localhost
+- name:  tasks on localhost
   block:
     #- set_fact:
     #    ansible_connection: local
     
     # double check to ensure this soluiotn is not solution we tried before 
-    - name: [ {{ title }} ]  Cannot find solution based on existing knowledge map
+    - name:  Cannot find solution based on existing knowledge map
       block:
-      - name: [ {{ title }} ]  Need human investigation
+      - name:  Need human investigation
         debug:
           msg: "Inform Support Team for Huamn Investigation!!! Cannot find suitable solution in current knowledge map!!!"
 
       # task exit point 02
       #- meta: end_play
 
-      - name: [ {{ title }} ]  No New Solution
+      - name:  No New Solution
         set_fact:
           find_solution: False
       #####################################################
@@ -60,10 +60,10 @@
 
       when: "'999' in  rule_base_task_list['record']"
 
-    - name: [ {{ title }} ]  There is new solution
+    - name:  There is new solution
       block:
       # Break the recommendation into task list 
-      - name: [ {{ title }} ]  create readablbe solution
+      - name:  create readablbe solution
         command: /usr/bin/python3
         args:
           stdin: |
@@ -89,7 +89,7 @@
         register: recommended_solution
 
       # Initialize the excuted_tasks with recommende execution plan
-      - name: [ {{ title }} ]  TroubleShoot Path
+      - name:  TroubleShoot Path
         set_fact:
           excuted_tasks: "{{ recommended_solution['stdout_lines'] }}"
 
@@ -100,16 +100,16 @@
 #- set_fact:
 #    ansible_connection: ssh
 
-- name: [ {{ title }} ]  Apply new solution
+- name:  Apply new solution
   block:
-    - name: [ {{ title }} ]  mark there is the failure of task
+    - name:  mark there is the failure of task
       set_fact: 
         continue_task: True
 
     # Execute the recommende execution plan
     # Any task failur will cause the play end
     # If the loop is end wihout failire, it means the recommendation works
-    - name: [ {{ title }} ]  execute recommendation task by task 
+    - name:  execute recommendation task by task 
       include_tasks: 02-01-01-01-02-01-mem-task.yaml
       vars:
         title: 02-01-01-01-02-01-mem-task
@@ -117,20 +117,20 @@
       loop_control:
         loop_var: rb_task
     
-    - name: [ {{ title }} ]  continue when all tasks completed as expected
+    - name:  continue when all tasks completed as expected
       block:
       # print the recommend plan and actual result
       # when it succeeds.
-      - name: [ {{ title }} ]  Successful TroubleShoot Path
+      - name:  Successful TroubleShoot Path
         debug: var=excuted_tasks
       
       # update the work map
-      - name: [ {{ title }} ]  update knowledge map when finding solution
+      - name:  update knowledge map when finding solution
         include_tasks: 00-03-Update_knowledge_map_at_end.yaml
         vars:
           title: 00-03-Update_knowledge_map_at_end
       
-      - name: [ {{ title }} ]  Set var success
+      - name:  Set var success
         set_fact:
           success: True
       when: continue_task | bool

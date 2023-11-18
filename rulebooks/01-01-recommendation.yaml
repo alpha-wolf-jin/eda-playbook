@@ -1,20 +1,20 @@
 ---
-- name: [ {{ title }} ] Prepare the knowledge map on localhost
+- name: Prepare the knowledge map on localhost
   include_tasks: 00-01-fetch-knowledge-map.yaml
   vars:
     title: 00-01-fetch-knowledge-map
         
-- name: [ {{ title }} ] Delegate to localhost and call Rule-base for solution
+- name: Delegate to localhost and call Rule-base for solution
   block:
     #- set_fact:
     #    ansible_connection: local
 
-    - name: [ {{ title }} ] Retrieve data from work knowledge map file
+    - name: Retrieve data from work knowledge map file
       set_fact:
         raw_path_data: "{{ lookup('file', '{{ init_knowledge_map_dir }}/{{ source_files[1] | basename }}').split('\n') }}"
         path_data: []
     
-    - name: [ {{ title }} ] Convert raw data to j2 input data - list of list
+    - name: Convert raw data to j2 input data - list of list
       set_fact:
         path_data: "{{ path_data + [ line.split(',') ] }}"
       loop: "{{ raw_path_data }}"
@@ -22,12 +22,12 @@
         loop_var: line
     
     
-    - name: [ {{ title }} ] Generate body data for KIE call
+    - name: Generate body data for KIE call
       ansible.builtin.template:
         src: templates/input.j2
         dest: "{{ init_knowledge_map_dir }}/input.json"
     
-    - name: [ {{ title }} ] Call KIE for rcommended solution
+    - name: Call KIE for rcommended solution
       ansible.builtin.uri:
         url: "{{ rule_base_url }}"
         method: POST
@@ -42,15 +42,15 @@
       register: result_L1_recommendation
     
         
-    - name: [ {{ title }} ] Recommended Solutions
+    - name: Recommended Solutions
       set_fact:
         kie_facts: "{{ result_L1_recommendation['json'] }}"
 
-    - name: [ {{ title }} ] kie_facts
+    - name: kie_facts
       debug:
         msg: "{{ result_L1_recommendation['json'] }}"
 
-    - name: [ {{ title }} ] check if new solution is found
+    - name: check if new solution is found
       command: /usr/bin/python3
       args:
         stdin: |
@@ -66,12 +66,12 @@
 
     # when knowledge is poorly definded,
     # no sulution can be recommended.
-    - name: [ {{ title }} ] Failed to find Solution
+    - name: Failed to find Solution
       fail:
         msg: "Failed to find Solution"
       when:  not results.stdout_lines[-1] | bool
 
-    - name: [ {{ title }} ] Solution is found and add action to event queue
+    - name: Solution is found and add action to event queue
       block:
 
       - set_fact:
@@ -80,7 +80,7 @@
       - debug:
           msg: "{{ solution }}"
 
-      - name: [ {{ title }} ] Send event to Kafka topic to trigger troubleshooting
+      - name: Send event to Kafka topic to trigger troubleshooting
         ansible.builtin.shell: |
           set timeout 300
           echo "{{ solution }}" | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
