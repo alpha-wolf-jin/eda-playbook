@@ -1,12 +1,12 @@
 ---
 
 
-- name: {{ title }} - when task result is expected
+- name: [ {{ title }} ]  when task result is expected
   block:
 
   # when the executed task return is expected,
   # update the related task weight as 0 on the file server
-  - name: {{ title }} - Update the network map file when result is expected (weight 0)
+  - name: [ {{ title }} ]  Update the network map file when result is expected (weight 0)
     ansible.builtin.replace:
       path: "{{ source_files[1] }}"
       regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"

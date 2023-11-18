@@ -8,13 +8,13 @@
 # skip this task
 # Update the varialbe excuted_tasks as skip task 
 
-- name: {{ title }} - update execution history for skip task
+- name: [ {{ title }} ]  update execution history for skip task
   block:
-    - name: {{ title }} - add skip task to variable excuted_tasks list
+    - name: [ {{ title }} ]  add skip task to variable excuted_tasks list
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
     
-    - name: {{ title }} - show the excuted_tasks list
+    - name: [ {{ title }} ]  show the excuted_tasks list
       debug: var=excuted_tasks
 
   when: task.strip().split('-')[2].split(':')[1] == '0'
@@ -23,15 +23,15 @@
 # The below is task which should be not skipped
 #
 
-- name: {{ title }} - Extract task name
+- name: [ {{ title }} ]  Extract task name
   set_fact:
-    task_name: {{ title }} - "{{  task.strip().split('-')[0] }}"
+    task_name: [ {{ title }} ]  "{{  task.strip().split('-')[0] }}"
 
-- name: {{ title }} - show task name 
+- name: [ {{ title }} ]  show task name 
   debug: var=task_name
   run_once: true
 
-- name: {{ title }} - Execute new task with standard workflow
+- name: [ {{ title }} ]  Execute new task with standard workflow
   block:
     - set_fact:
         task_result: "{{  tasks_results[task_name] }}"  
@@ -41,18 +41,18 @@
     
      #- debug: var=task_status
     
-    - name: {{ title }} - update execution history
+    - name: [ {{ title }} ]  update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
     
     #- debug: var=task_status
     
-    - name: {{ title }} - when task result is expected
+    - name: [ {{ title }} ]  when task result is expected
       include_tasks: 00-04-task-not-as-expected.yaml
       vars:
         title: 00-04-task-not-as-expected
     
-    - name: {{ title }} - when task result is not expected
+    - name: [ {{ title }} ]  when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
       vars:
         title: 00-05-task-as-expected.yaml
@@ -62,9 +62,9 @@
   - task_name not in sub_workflow_with_rule_base
 
 
-- name: {{ title }} - Execute new task with Rule-base workflow
+- name: [ {{ title }} ]  Execute new task with Rule-base workflow
   block:
-    - name: {{ title }} - start the workflow given by rule base
+    - name: [ {{ title }} ]  start the workflow given by rule base
       include_tasks: 02-01-01-01-loop-mem-execute-recommendation.yaml
       vars:
         source_files:
@@ -90,17 +90,17 @@
     
      #- debug: var=task_status
     
-    - name: {{ title }} - update execution history
+    - name: [ {{ title }} ]  update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [  task_status ] }}"
     
     #- debug: var=task_status
-    - name: {{ title }} - task info  and task_result
+    - name: [ {{ title }} ]  task info  and task_result
       debug:
         msg: "{{ task }} -- {{ task_result }}"
 
     
-    - name: {{ title }} - when task result is expected
+    - name: [ {{ title }} ]  when task result is expected
       include_tasks: 00-04-task-not-as-expected.yaml
       vars:
         source_files:
@@ -110,7 +110,7 @@
         title: 00-04-task-not-as-expected
 
     
-    - name: {{ title }} - when task result is not expected
+    - name: [ {{ title }} ]  when task result is not expected
       include_tasks: 00-05-task-as-expected.yaml
       vars:
         source_files:

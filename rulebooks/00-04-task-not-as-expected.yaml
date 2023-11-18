@@ -1,25 +1,25 @@
 ---
 
-- name: {{ title }} - when task result is not expected
+- name: [ {{ title }} ]  when task result is not expected
   block:
 
-    - name: {{ title }} - update execution history
+    - name: [ {{ title }} ]  update execution history
       set_fact:
         excuted_tasks: "{{ excuted_tasks + [ 'Failed at task : ' +  task.strip().split('-')[0]  ] }}"
 
-    - name: {{ title }} - Failed on current  TroubleShoot Path
+    - name: [ {{ title }} ]  Failed on current  TroubleShoot Path
       debug: var=excuted_tasks
       when: 
       - "inventory_hostname == 'localhost'"
 #      - rb_workflow is not defined or not rb_workflow | bool
 
-    - name: {{ title }} - source file
+    - name: [ {{ title }} ]  source file
       debug: var=source_files
 
     # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
     # when the executed task return is not expected,
     # update the related task weight as 999 on the file server
-    - name: {{ title }} - Update the network map file - when result is not expected
+    - name: [ {{ title }} ]  Update the network map file - when result is not expected
       ansible.builtin.replace:
         path: "{{ source_files[1] }}"
         #path: "{{ init_knowledge_map_dir}}/link_data_file"
@@ -31,7 +31,7 @@
     # This is set the task with task_resutl with the weight 0
     # When the other return code is with weight 999
     # this return code should be with weight 0
-    - name: {{ title }} - Update the network map file for matching item in map file
+    - name: [ {{ title }} ]  Update the network map file for matching item in map file
       ansible.builtin.replace:
         path: "{{ source_files[1] }}"
         regexp: "^({{ task.strip().split('-')[0] }},{{ task_result }}),(.+),(.+)$"
@@ -49,7 +49,7 @@
     # the rule base and execution are under one parent playbook, 
     # it doesn't need EDA to ordinate them. That makes the varaibles management easier.
     # It is suitable close-coupled tasks.
-    - name: {{ title }} - Send event to find next best solution
+    - name: [ {{ title }} ]  Send event to find next best solution
       ansible.builtin.shell: |
         set timeout 300
         echo '{"implement": "RuleBase", "init": "False"}' | sed "s/'/\"/g" | kafka_2.13-3.3.1/bin/kafka-console-producer.sh --broker-list 192.168.122.51:9092 --topic aap
