@@ -16,6 +16,7 @@
     
     - name:  show the excuted_tasks list
       debug: var=excuted_tasks
+      when: "inventory_hostname == 'localhost'"
 
   when: task.strip().split('-')[2].split(':')[1] == '0'
 

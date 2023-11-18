@@ -23,6 +23,7 @@
 - name:  info about new solution
   debug:
     msg: "{{ rule_base_task_list }}"
+  run_once: true
 
 ## copy the latest knowledge map into the container
 #- name:  Prepare the knowledge map on localhost

@@ -17,8 +17,8 @@
       - "inventory_hostname == 'localhost'"
 #      - rb_workflow is not defined or not rb_workflow | bool
 
-    - name:  source file
-      debug: var=source_files
+    #- name:  source file
+    #  debug: var=source_files
 
     # line of map file Antivirus_Scan_Issue,0,Stop_Delay_Scan,999
     # when the executed task return is not expected,
