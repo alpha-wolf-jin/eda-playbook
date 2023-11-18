@@ -9,6 +9,19 @@
 
     - name: Failed on current  TroubleShoot Path
       debug: var=excuted_tasks
+      when: 
+      - "inventory_hostname == 'localhost'"
+      - rb_workflow is not defined or not rb_workflow | bool
+
+    #- set_fact:
+    #    ansible_connection: ssh
+
+    # Since Current recommendation cannot work. Let the entire excution end
+    - meta: end_play
+      when: rb_workflow is not defined or not rb_workflow | bool
+
+  when: task.strip().split('-')[1] != task_result
+
 
     - name: source file
       debug: var=source_files

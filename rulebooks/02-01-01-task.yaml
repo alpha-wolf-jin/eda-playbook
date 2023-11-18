@@ -7,8 +7,14 @@
 # Once the task was executed before (weight is zero)
 # Update the varialbe excuted_tasks as skip task 
 - name: update execution history for skip task
-  set_fact:
-    excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
+  block:
+    - name: add skip task to variable excuted_tasks list
+      set_fact:
+        excuted_tasks: "{{ excuted_tasks + [ 'skip executed task : ' +  task.strip().split('-')[0]  ] }}"
+    
+    - name: show the excuted_tasks list
+      debug: var=excuted_tasks
+
   when: task.strip().split('-')[2].split(':')[1] == '0'
 
 #- debug: var=excuted_tasks
@@ -18,10 +24,10 @@
   set_fact:
     task_name: "{{  task.strip().split('-')[0] }}"
 
-- debug:
-    msg: "{{ task_name }}"
-  when: 
-  - task_name not in sub_workflow_with_rule_base
+- debug: var=task_name
+#    msg: "{{ task_name }}"
+#  when: 
+#  - task_name not in sub_workflow_with_rule_base
 
 - name: Execute new task with standard workflow
   block:
