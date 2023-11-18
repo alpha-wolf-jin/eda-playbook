@@ -9,7 +9,7 @@
         
     - name: Show current executions
       debug: 
-        msg: " 'Failed at task : ' + {{  task.strip().split('-')[0] }} "
+        msg: "'Failed: ' The return code {{ task_result }} of task {{  task.strip().split('-')[0] }} is not expected."
       run_once: true
 
     - name:  Failed on current  TroubleShoot Path
